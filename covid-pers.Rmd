@@ -5,9 +5,22 @@ date: "6/9/2021"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+#### Load packages
+```{r, warning=FALSE, message=FALSE}
+library("tidyverse")
+library("nlme") # for multilevel models
 ```
 
-## R Markdown
+#### Load data
+```{r, echo = T, results = 'hide', warning=FALSE, message=FALSE}
+source("covid-pers-merge.R") # This executes data import & cleaning.
+```
+
+#### Inspect data
+This dataset still contains around 3.6% missings for the Big Five. These respondents have never filled out the Big Five (validly). I've now used all data from 2005-2019 to fill in later missings in the Big Five. The variable $lastwave$ shows the last wave where a respondent answered the Big Five (at least one item - individual missing Big Five traits are also filled in, though).
+```{r, warning=FALSE, message=FALSE}
+table(covid_pers$core) # 0 = SOEP-IS, 1 = SOEP-Core
+summary(covid_pers)
+covid_pers %>% group_by(core, lastwave) %>% summarise(obs = n())
+```
 

@@ -2,3 +2,5 @@
 .Rhistory
 .RData
 .Ruserdata
+# ignore raw data (always)
+/data
