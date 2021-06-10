@@ -1,14 +1,14 @@
 ---
 title: "SOEP-RKI: Big Five Personality Traits and COVID-19 Antibodies"
 author: "Michael D. Krämer"
-date: "6/9/2021"
+date: "6/10/2021"
 output: html_document
 ---
 
 #### Load packages
 ```{r, warning=FALSE, message=FALSE}
 library("tidyverse")
-library("nlme") # for multilevel models
+library("DescTools")
 ```
 
 #### Load data
@@ -17,10 +17,192 @@ source("covid-pers-merge.R") # This executes data import & cleaning.
 ```
 
 #### Inspect data
-This dataset still contains around 3.6% missings for the Big Five. These respondents have never filled out the Big Five (validly). I've now used all data from 2005-2019 to fill in later missings in the Big Five. The variable $lastwave$ shows the last wave where a respondent answered the Big Five (at least one item - individual missing Big Five traits are also filled in, though).
+This dataset still contains around 3.6% missings for the Big Five. These respondents have never filled out the Big Five (validly). I've now used all available data from 2005-2019 to fill in later missings in the Big Five. The variable *lastwave* shows the most recent wave where a respondent answered the Big Five (at least one item - individual missing Big Five traits are also filled in from earlier waves, though).
 ```{r, warning=FALSE, message=FALSE}
 table(covid_pers$core) # 0 = SOEP-IS, 1 = SOEP-Core
+table(covid_pers$core, covid_pers$infekt_pos)
+table(covid_pers$core, covid_pers$AK_pos)
 summary(covid_pers)
 covid_pers %>% group_by(core, lastwave) %>% summarise(obs = n())
 ```
 
+#### Descriptive results
+
+Mean differences (with the composite measure, *infekt_pos*)
+```{r, warning=FALSE, message=FALSE}
+covid_pers %>% filter(!is.na(infekt_pos)) %>% group_by(infekt_pos) %>% 
+  summarize(n=n(), m_O = mean(open, na.rm=T), sd_O = sd(open, na.rm=T),
+  m_C = mean(cons, na.rm=T), sd_C = sd(cons, na.rm=T),
+  m_E = mean(extra, na.rm=T), sd_E = sd(extra, na.rm=T),
+  m_A = mean(agree, na.rm=T), sd_A = sd(agree, na.rm=T),
+  m_N = mean(neuro, na.rm=T), sd_N = sd(neuro, na.rm=T))
+```
+
+Mean differences (with the antibodies test result, *AK_pos*)
+```{r, warning=FALSE, message=FALSE}
+covid_pers %>% filter(!is.na(AK_pos)) %>% group_by(AK_pos) %>% 
+  summarize(n=n(), m_O = mean(open, na.rm=T), sd_O = sd(open, na.rm=T),
+  m_C = mean(cons, na.rm=T), sd_C = sd(cons, na.rm=T),
+  m_E = mean(extra, na.rm=T), sd_E = sd(extra, na.rm=T),
+  m_A = mean(agree, na.rm=T), sd_A = sd(agree, na.rm=T),
+  m_N = mean(neuro, na.rm=T), sd_N = sd(neuro, na.rm=T))
+```
+
+### Main analyses
+
+Main analysis with the composite measure (*infekt_pos*).
+
+#### Start with age and gender
+
+```{r, warning=FALSE, message=FALSE}
+covid_pers <- covid_pers %>% mutate(female = sex-1)
+
+m1_logit_comp <- glm(infekt_pos ~ female + age, family = binomial(link='logit'), data = covid_pers)
+summary(m1_logit_comp)
+```
+
+#### Add number of persons in household and household income
+
+```{r, warning=FALSE, message=FALSE}
+m2_logit_comp <- glm(infekt_pos ~ female + age + hghinc + hhgr, family = binomial(link='logit'), data = covid_pers)
+summary(m2_logit_comp)
+```
+
+#### Add Big Five traits
+
+```{r, warning=FALSE, message=FALSE}
+m3_logit_comp <- glm(infekt_pos ~ female + age + hghinc + hhgr + open + cons + extra + agree + neuro, family = binomial(link='logit'), data = covid_pers)
+summary(m3_logit_comp)
+```
+
+#### Zero-order models
+
+```{r, warning=FALSE, message=FALSE}
+open_logit_comp <- glm(infekt_pos ~ open, family = binomial(link='logit'), data = covid_pers)
+open_logit_comp_summary <- summary(open_logit_comp)
+cons_logit_comp <- glm(infekt_pos ~ cons, family = binomial(link='logit'), data = covid_pers)
+cons_logit_comp_summary <- summary(cons_logit_comp)
+extra_logit_comp <- glm(infekt_pos ~ extra, family = binomial(link='logit'), data = covid_pers)
+extra_logit_comp_summary <- summary(extra_logit_comp)
+agree_logit_comp <- glm(infekt_pos ~ agree, family = binomial(link='logit'), data = covid_pers)
+agree_logit_comp_summary <- summary(agree_logit_comp)
+neuro_logit_comp <- glm(infekt_pos ~ neuro, family = binomial(link='logit'), data = covid_pers)
+neuro_logit_comp_summary <- summary(neuro_logit_comp)
+
+# Openness to Experience
+round(open_logit_comp_summary$coefficients, 3)
+# Conscientiousness
+round(cons_logit_comp_summary$coefficients, 3)
+# Extraversion
+round(extra_logit_comp_summary$coefficients, 3)
+# Agreeableness
+round(agree_logit_comp_summary$coefficients, 3)
+# Neuroticism
+round(neuro_logit_comp_summary$coefficients, 3)
+```
+
+### Model diagnostics
+
+```{r, warning=FALSE, message=FALSE}
+DescTools::PseudoR2(m3_logit_comp, which="all")
+```
+Recommended Pseudo $R^2$ measures: McFadden non-adjusted and adjusted, Tjur's D
+
+To be added: 'LogisticsDx' package not available for this R version. Hosmer-Lemeshow test, Osius-Rajek Standardized Pearson Test, Stukel test.
+
+Calibration Plot in 'rms' package
+```{r, warning=FALSE, message=FALSE, fig.height=6, fig.width=6}
+library("rms")
+rms.out=lrm(infekt_pos ~ female + age + hghinc + hhgr + open + cons + extra + agree + neuro, data=covid_pers,x=TRUE,y=TRUE)
+plot(calibrate(rms.out))
+```
+
+### Secondary analyses
+
+Secondary analyses just with the antibodies measure (*AK_pos*) - not including PCR test results and self-reported infections.
+
+#### Start with age and gender
+
+```{r, warning=FALSE, message=FALSE}
+m1_logit_anti <- glm(AK_pos ~ female + age, family = binomial(link='logit'), data = covid_pers)
+summary(m1_logit_anti)
+```
+
+#### Add number of persons in household and household income
+
+```{r, warning=FALSE, message=FALSE}
+m2_logit_anti <- glm(AK_pos ~ female + age + hghinc + hhgr, family = binomial(link='logit'), data = covid_pers)
+summary(m2_logit_anti)
+```
+
+#### Add Big Five traits
+
+```{r, warning=FALSE, message=FALSE}
+m3_logit_anti <- glm(AK_pos ~ female + age + hghinc + hhgr + open + cons + extra + agree + neuro, family = binomial(link='logit'), data = covid_pers)
+summary(m3_logit_anti)
+```
+
+#### Zero-order models
+
+```{r, warning=FALSE, message=FALSE}
+open_logit_anti <- glm(AK_pos ~ open, family = binomial(link='logit'), data = covid_pers)
+open_logit_anti_summary <- summary(open_logit_anti)
+cons_logit_anti <- glm(AK_pos ~ cons, family = binomial(link='logit'), data = covid_pers)
+cons_logit_anti_summary <- summary(cons_logit_anti)
+extra_logit_anti <- glm(AK_pos ~ extra, family = binomial(link='logit'), data = covid_pers)
+extra_logit_anti_summary <- summary(extra_logit_anti)
+agree_logit_anti <- glm(AK_pos ~ agree, family = binomial(link='logit'), data = covid_pers)
+agree_logit_anti_summary <- summary(agree_logit_anti)
+neuro_logit_anti <- glm(AK_pos ~ neuro, family = binomial(link='logit'), data = covid_pers)
+neuro_logit_anti_summary <- summary(neuro_logit_anti)
+
+# Openness to Experience
+round(open_logit_anti_summary$coefficients, 3)
+# Conscientiousness
+round(cons_logit_anti_summary$coefficients, 3)
+# Extraversion
+round(extra_logit_anti_summary$coefficients, 3)
+# Agreeableness
+round(agree_logit_anti_summary$coefficients, 3)
+# Neuroticism
+round(neuro_logit_anti_summary$coefficients, 3)
+```
+
+### Model diagnostics
+
+```{r, warning=FALSE, message=FALSE}
+DescTools::PseudoR2(m3_logit_anti, which="all")
+```
+Recommended Pseudo $R^2$ measures: McFadden non-adjusted and adjusted, Tjur's D
+
+To be added: 'LogisticsDx' package not available for this R version. Hosmer-Lemeshow test, Osius-Rajek Standardized Pearson Test, Stukel test.
+
+Calibration Plot in 'rms' package
+```{r, warning=FALSE, message=FALSE, fig.height=6, fig.width=6}
+library("rms")
+rms.out=lrm(AK_pos ~ female + age + hghinc + hhgr + open + cons + extra + agree + neuro, data=covid_pers,x=TRUE,y=TRUE)
+plot(calibrate(rms.out))
+```
+
+### Exclude Federal States
+
+As preregistered, we exclude participants from three federal states with very low reported coronavirus case numbers: Brandenburg, Sachsen-Anhalt, and Mecklenburg-Vorpommern.
+
+#### Big Five traits
+
+```{r, warning=FALSE, message=FALSE}
+# exclude via 'bula'
+covid_pers_bula <- covid_pers %>% filter(bula %in% c(1:11,15:16))
+
+m3_logit_comp_bula <- glm(infekt_pos ~ female + age + hghinc + hhgr + open + cons + extra + agree + neuro, family = binomial(link='logit'), data = covid_pers_bula)
+summary(m3_logit_comp_bula)
+
+m3_logit_anti_bula <- glm(AK_pos ~ female + age + hghinc + hhgr + open + cons + extra + agree + neuro, family = binomial(link='logit'), data = covid_pers_bula)
+summary(m3_logit_anti_bula)
+```
+
+
+### To Be Done (?)
+
+* "For the same reason, in another additional analysis, we plan to exclude participants who indicated to have mostly worked from home during the coronavirus crisis."
+* "Lastly, due to the rising incidence rates in Germany during the field phase we will analyze timing of the administration of the antibody tests (measured by postal return date) as a moderator by comparing effects in the first third of all conducted test against effects in the last third of all conducted tests."
