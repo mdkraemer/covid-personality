@@ -27,6 +27,22 @@ summary(covid_pers)
 covid_pers %>% group_by(core, lastwave) %>% summarise(obs = n())
 ```
 
+#### Code education and income
+```{r, warning=FALSE, message=FALSE}
+covid_pers <- covid_pers %>% mutate(
+  edu_school = ifelse(pgcasmin==0 & !is.na(pgcasmin), 1, 0), 
+  edu_low = ifelse(pgcasmin %in% c(1,2,4), 1, 0), 
+  edu_mid = ifelse(pgcasmin %in% c(3,5,6,7), 1, 0), 
+  edu_high = ifelse(pgcasmin %in% c(8,9), 1, 0), 
+  edu_na = ifelse(is.na(pgcasmin), 1, 0), 
+  inc_2000 = ifelse(hghinc<=2000 & !is.na(hghinc), 1, 0), 
+  inc_4000 = ifelse(hghinc>2000 & hghinc<=4000 & !is.na(hghinc), 1, 0), 
+  inc_6000 = ifelse(hghinc>4000 & hghinc<=6000 & !is.na(hghinc), 1, 0), 
+  inc_rich = ifelse(hghinc>6000 & !is.na(hghinc), 1, 0), 
+  inc_na = ifelse(is.na(hghinc), 1, 0)
+)
+```
+
 #### Descriptive results
 
 Mean differences (with the composite measure, *infekt_pos*)
@@ -69,17 +85,20 @@ m1_logit_comp_weighted <- svyglm(infekt_pos ~ female + age, design=svydesign(id=
 summary(m1_logit_comp_weighted)
 ```
 
-#### Add number of persons in household and household income
+#### Add other control variables
+
+As reference categories, I chose 'edu_mid' and 'inc_4000' because these were the most frequent categories.
 
 ##### Unweighted
 ```{r, warning=FALSE, message=FALSE}
-m2_logit_comp <- glm(infekt_pos ~ female + age + hghinc + hhgr, family = binomial(link='logit'), data = covid_pers)
+m2_logit_comp <- glm(infekt_pos ~ female + age + hhgr + edu_school + edu_low + edu_high + edu_na + 
+                       inc_2000 + inc_6000 + inc_rich + inc_na, family = binomial(link='logit'), data = covid_pers)
 summary(m2_logit_comp)
 ```
 
 ##### Weighted
 ```{r, warning=FALSE, message=FALSE}
-m2_logit_comp_weighted <- svyglm(infekt_pos ~ female + age + hghinc + hhgr, design=svydesign(id=~1, weights=~phrf_20_final, data=covid_pers), family=quasibinomial(link='logit')) 
+m2_logit_comp_weighted <- svyglm(infekt_pos ~ female + age + hhgr + edu_school + edu_low + edu_high + edu_na + inc_2000 + inc_6000 + inc_rich + inc_na, design=svydesign(id=~1, weights=~phrf_20_final, data=covid_pers), family=quasibinomial(link='logit')) 
 summary(m2_logit_comp_weighted)
 ```
 
@@ -87,28 +106,17 @@ summary(m2_logit_comp_weighted)
 
 ##### Unweighted
 ```{r, warning=FALSE, message=FALSE}
-m3_logit_comp <- glm(infekt_pos ~ female + age + hghinc + hhgr + open + cons + extra + agree + neuro, family = binomial(link='logit'), data = covid_pers)
+m3_logit_comp <- glm(infekt_pos ~ female + age + hhgr + edu_school + edu_low + edu_high + edu_na + 
+                       inc_2000 + inc_6000 + inc_rich + inc_na + open + cons + extra + agree + neuro, family = binomial(link='logit'), data = covid_pers)
 summary(m3_logit_comp)
 ```
 
 ##### Weighted
 ```{r, warning=FALSE, message=FALSE}
-m3_logit_comp_weighted <- svyglm(infekt_pos ~ female + age + hghinc + hhgr + open + cons + extra + agree + neuro, design=svydesign(id=~1, weights=~phrf_20_final, data=covid_pers), family=quasibinomial(link='logit')) 
+m3_logit_comp_weighted <- svyglm(infekt_pos ~ female + age + hhgr + edu_school + edu_low + edu_high +
+                                   edu_na + inc_2000 + inc_6000 + inc_rich + inc_na + open + cons + 
+                                   extra + agree + neuro, design=svydesign(id=~1, weights=~phrf_20_final, data=covid_pers), family=quasibinomial(link='logit'))
 summary(m3_logit_comp_weighted)
-```
-
-#### Without income (too much item nonresponse)
-
-##### Unweighted
-```{r, warning=FALSE, message=FALSE}
-m4_logit_comp <- glm(infekt_pos ~ female + age + hhgr + open + cons + extra + agree + neuro, family = binomial(link='logit'), data = covid_pers)
-summary(m4_logit_comp)
-```
-
-##### Weighted
-```{r, warning=FALSE, message=FALSE}
-m4_logit_comp_weighted <- svyglm(infekt_pos ~ female + age + hhgr + open + cons + extra + agree + neuro, design=svydesign(id=~1, weights=~phrf_20_final, data=covid_pers), family=quasibinomial(link='logit'))
-summary(m4_logit_comp_weighted)
 ```
 
 #### Zero-order models
@@ -166,7 +174,7 @@ round(neuro_logit_comp_weighted_summary$coefficients, 3)
 ### Model diagnostics
 
 ```{r, warning=FALSE, message=FALSE}
-DescTools::PseudoR2(m4_logit_comp, which="all")
+DescTools::PseudoR2(m3_logit_comp, which="all")
 ```
 Recommended Pseudo $R^2$ measures: McFadden non-adjusted and adjusted, Tjur's D
 
@@ -175,7 +183,8 @@ To be added: 'LogisticsDx' package not available for this R version. Hosmer-Leme
 Calibration Plot in 'rms' package
 ```{r, warning=FALSE, message=FALSE, fig.height=6, fig.width=6}
 library("rms")
-rms.out=lrm(infekt_pos ~ female + age + hhgr + open + cons + extra + agree + neuro, data=covid_pers,x=TRUE,y=TRUE)
+rms.out=lrm(infekt_pos ~ female + age + hhgr + edu_school + edu_low + edu_high + edu_na + 
+                       inc_2000 + inc_6000 + inc_rich + inc_na + open + cons + extra + agree + neuro, data=covid_pers,x=TRUE,y=TRUE)
 plot(calibrate(rms.out))
 ```
 
@@ -200,17 +209,21 @@ m1_logit_anti_weighted <- svyglm(AK_pos ~ female + age, design=svydesign(id=~1, 
 summary(m1_logit_anti_weighted)
 ```
 
-#### Add number of persons in household and household income
+#### Add other control variables
+
+As reference categories, I chose 'edu_mid' and 'inc_4000' because these were the most frequent categories.
 
 ##### Unweighted
 ```{r, warning=FALSE, message=FALSE}
-m2_logit_anti <- glm(AK_pos ~ female + age + hghinc + hhgr, family = binomial(link='logit'), data = covid_pers)
+m2_logit_anti <- glm(AK_pos ~ female + age + hhgr + edu_school + edu_low + edu_high + edu_na + 
+                       inc_2000 + inc_6000 + inc_rich + inc_na, family = binomial(link='logit'), data = covid_pers)
 summary(m2_logit_anti)
 ```
 
 ##### Weighted
 ```{r, warning=FALSE, message=FALSE}
-m2_logit_anti_weighted <- svyglm(AK_pos ~ female + age + hghinc + hhgr, design=svydesign(id=~1, weights=~phrf_20_final_dbs, data=covid_pers_AK_only), family=quasibinomial(link='logit'))
+m2_logit_anti_weighted <- svyglm(AK_pos ~ female + age + hhgr + edu_school + edu_low + edu_high + edu_na + 
+                       inc_2000 + inc_6000 + inc_rich + inc_na, design=svydesign(id=~1, weights=~phrf_20_final_dbs, data=covid_pers_AK_only), family=quasibinomial(link='logit'))
 summary(m2_logit_anti_weighted)  
 ```
 
@@ -218,28 +231,16 @@ summary(m2_logit_anti_weighted)
 
 ##### Unweighted
 ```{r, warning=FALSE, message=FALSE}
-m3_logit_anti <- glm(AK_pos ~ female + age + hghinc + hhgr + open + cons + extra + agree + neuro, family = binomial(link='logit'), data = covid_pers)
+m3_logit_anti <- glm(AK_pos ~ female + age + hhgr + edu_school + edu_low + edu_high + edu_na + 
+                       inc_2000 + inc_6000 + inc_rich + inc_na + open + cons + extra + agree + neuro, family = binomial(link='logit'), data = covid_pers)
 summary(m3_logit_anti)
 ```
 
 ##### Weighted
 ```{r, warning=FALSE, message=FALSE}
-m3_logit_anti_weighted <- svyglm(AK_pos ~ female + age + hghinc + hhgr + open + cons + extra + agree + neuro, design=svydesign(id=~1, weights=~phrf_20_final_dbs, data=covid_pers_AK_only), family=quasibinomial(link='logit'))
+m3_logit_anti_weighted <- svyglm(AK_pos ~ female + age + hhgr + edu_school + edu_low + edu_high + edu_na + 
+                       inc_2000 + inc_6000 + inc_rich + inc_na + open + cons + extra + agree + neuro, design=svydesign(id=~1, weights=~phrf_20_final_dbs, data=covid_pers_AK_only), family=quasibinomial(link='logit'))
 summary(m3_logit_anti_weighted)  
-```
-
-#### Without income (too much item nonresponse)
-
-##### Unweighted
-```{r, warning=FALSE, message=FALSE}
-m4_logit_anti <- glm(AK_pos ~ female + age + hhgr + open + cons + extra + agree + neuro, family = binomial(link='logit'), data = covid_pers)
-summary(m4_logit_anti)
-```
-
-##### Weighted
-```{r, warning=FALSE, message=FALSE}
-m4_logit_anti_weighted <- svyglm(AK_pos ~ female + age + hhgr + open + cons + extra + agree + neuro, design=svydesign(id=~1, weights=~phrf_20_final_dbs, data=covid_pers_AK_only), family=quasibinomial(link='logit'))
-summary(m4_logit_anti_weighted)  
 ```
 
 #### Zero-order models
@@ -297,7 +298,7 @@ round(neuro_logit_anti_weighted_summary$coefficients, 3)
 ### Model diagnostics
 
 ```{r, warning=FALSE, message=FALSE}
-DescTools::PseudoR2(m4_logit_anti, which="all")
+DescTools::PseudoR2(m3_logit_anti, which="all")
 ```
 Recommended Pseudo $R^2$ measures: McFadden non-adjusted and adjusted, Tjur's D
 
@@ -306,7 +307,8 @@ To be added: 'LogisticsDx' package not available for this R version. Hosmer-Leme
 Calibration Plot in 'rms' package
 ```{r, warning=FALSE, message=FALSE, fig.height=6, fig.width=6}
 library("rms")
-rms.out=lrm(AK_pos ~ female + age + hhgr + open + cons + extra + agree + neuro, data=covid_pers,x=TRUE,y=TRUE)
+rms.out=lrm(AK_pos ~ female + age + hhgr + edu_school + edu_low + edu_high + edu_na + 
+                       inc_2000 + inc_6000 + inc_rich + inc_na + open + cons + extra + agree + neuro, data=covid_pers,x=TRUE,y=TRUE)
 plot(calibrate(rms.out))
 ```
 
@@ -319,11 +321,13 @@ As preregistered, we exclude participants from three federal states with very lo
 # exclude via 'bula'
 covid_pers_bula <- covid_pers %>% filter(bula %in% c(1:11,15:16))
 
-m4_logit_comp_bula <- glm(infekt_pos ~ female + age + hhgr + open + cons + extra + agree + neuro, family = binomial(link='logit'), data = covid_pers_bula)
-summary(m4_logit_comp_bula)
+m3_logit_comp_bula <- glm(infekt_pos ~ female + age + hhgr + edu_school + edu_low + edu_high + edu_na + 
+                       inc_2000 + inc_6000 + inc_rich + inc_na + open + cons + extra + agree + neuro, family = binomial(link='logit'), data = covid_pers_bula)
+summary(m3_logit_comp_bula)
 
-m4_logit_anti_bula <- glm(AK_pos ~ female + age + hhgr + open + cons + extra + agree + neuro, family = binomial(link='logit'), data = covid_pers_bula)
-summary(m4_logit_anti_bula)
+m3_logit_anti_bula <- glm(AK_pos ~ female + age + hhgr + edu_school + edu_low + edu_high + edu_na + 
+                       inc_2000 + inc_6000 + inc_rich + inc_na + open + cons + extra + agree + neuro, family = binomial(link='logit'), data = covid_pers_bula)
+summary(m3_logit_anti_bula)
 ```
 
 ##### Weighted
@@ -331,11 +335,15 @@ summary(m4_logit_anti_bula)
 # exclude via 'bula'
 covid_pers_AK_only_bula <- covid_pers_AK_only %>% filter(bula %in% c(1:11,15:16))
 
-m4_logit_comp_bula_weighted <- svyglm(infekt_pos ~ female + age + hhgr + open + cons + extra + agree + neuro, design=svydesign(id=~1, weights=~phrf_20_final, data=covid_pers_bula), family=quasibinomial(link='logit'))
-summary(m4_logit_comp_bula_weighted)
+m3_logit_comp_bula_weighted <- svyglm(infekt_pos ~ female + age + hhgr + edu_school + edu_low + edu_high + 
+                                        edu_na + inc_2000 + inc_6000 + inc_rich + inc_na + open + cons +
+                                        extra + agree + neuro, design=svydesign(id=~1, weights=~phrf_20_final, data=covid_pers_bula), family=quasibinomial(link='logit'))
+summary(m3_logit_comp_bula_weighted)
 
-m4_logit_anti_bula_weighted <- svyglm(AK_pos ~ female + age + hhgr + open + cons + extra + agree + neuro, design=svydesign(id=~1, weights=~phrf_20_final_dbs, data=covid_pers_AK_only_bula), family=quasibinomial(link='logit'))
-summary(m4_logit_anti_bula_weighted)  
+m3_logit_anti_bula_weighted <- svyglm(AK_pos ~ female + age + hhgr + edu_school + edu_low + edu_high + 
+                                        edu_na + inc_2000 + inc_6000 + inc_rich + inc_na + open + cons +
+                                        extra + agree + neuro, design=svydesign(id=~1, weights=~phrf_20_final_dbs, data=covid_pers_AK_only_bula), family=quasibinomial(link='logit'))
+summary(m3_logit_anti_bula_weighted)  
 ```
 
 ### To Be Done (?)
