@@ -5,7 +5,7 @@ library(psych)
 
 #### load data ####
 
-soep_rki <- haven::read_dta("data/_rkisoep_big5_pre_09062021.dta")
+soep_rki <- haven::read_dta("data/_rkisoep_big5_pre_11062021.dta")
 names(soep_rki)
 
 soep_big5 <- haven::read_dta("data/bf5-soep-core-is.dta")
@@ -88,5 +88,4 @@ soep_big5 <- soep_big5 %>% select(pid, open, cons, extra, agree, neuro, core, la
 
 covid_pers <- left_join(soep_rki, soep_big5)
 summary(covid_pers)
-
-
+save(covid_pers, file = "data/covid_pers.rda")

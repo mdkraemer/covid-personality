@@ -9,6 +9,7 @@ output: html_document
 ```{r, warning=FALSE, message=FALSE}
 library("tidyverse")
 library("DescTools")
+library("survey")
 ```
 
 #### Load data
@@ -54,6 +55,7 @@ Main analysis with the composite measure (*infekt_pos*).
 
 #### Start with age and gender
 
+##### Unweighted
 ```{r, warning=FALSE, message=FALSE}
 covid_pers <- covid_pers %>% mutate(female = sex-1)
 
@@ -61,22 +63,57 @@ m1_logit_comp <- glm(infekt_pos ~ female + age, family = binomial(link='logit'),
 summary(m1_logit_comp)
 ```
 
+##### Weighted
+```{r, warning=FALSE, message=FALSE}
+m1_logit_comp_weighted <- svyglm(infekt_pos ~ female + age, design=svydesign(id=~1, weights=~phrf_20_final, data=covid_pers), family=quasibinomial(link='logit')) 
+summary(m1_logit_comp_weighted)
+```
+
 #### Add number of persons in household and household income
 
+##### Unweighted
 ```{r, warning=FALSE, message=FALSE}
 m2_logit_comp <- glm(infekt_pos ~ female + age + hghinc + hhgr, family = binomial(link='logit'), data = covid_pers)
 summary(m2_logit_comp)
 ```
 
+##### Weighted
+```{r, warning=FALSE, message=FALSE}
+m2_logit_comp_weighted <- svyglm(infekt_pos ~ female + age + hghinc + hhgr, design=svydesign(id=~1, weights=~phrf_20_final, data=covid_pers), family=quasibinomial(link='logit')) 
+summary(m2_logit_comp_weighted)
+```
+
 #### Add Big Five traits
 
+##### Unweighted
 ```{r, warning=FALSE, message=FALSE}
 m3_logit_comp <- glm(infekt_pos ~ female + age + hghinc + hhgr + open + cons + extra + agree + neuro, family = binomial(link='logit'), data = covid_pers)
 summary(m3_logit_comp)
 ```
 
+##### Weighted
+```{r, warning=FALSE, message=FALSE}
+m3_logit_comp_weighted <- svyglm(infekt_pos ~ female + age + hghinc + hhgr + open + cons + extra + agree + neuro, design=svydesign(id=~1, weights=~phrf_20_final, data=covid_pers), family=quasibinomial(link='logit')) 
+summary(m3_logit_comp_weighted)
+```
+
+#### Without income (too much item nonresponse)
+
+##### Unweighted
+```{r, warning=FALSE, message=FALSE}
+m4_logit_comp <- glm(infekt_pos ~ female + age + hhgr + open + cons + extra + agree + neuro, family = binomial(link='logit'), data = covid_pers)
+summary(m4_logit_comp)
+```
+
+##### Weighted
+```{r, warning=FALSE, message=FALSE}
+m4_logit_comp_weighted <- svyglm(infekt_pos ~ female + age + hhgr + open + cons + extra + agree + neuro, design=svydesign(id=~1, weights=~phrf_20_final, data=covid_pers), family=quasibinomial(link='logit'))
+summary(m4_logit_comp_weighted)
+```
+
 #### Zero-order models
 
+##### Unweighted
 ```{r, warning=FALSE, message=FALSE}
 open_logit_comp <- glm(infekt_pos ~ open, family = binomial(link='logit'), data = covid_pers)
 open_logit_comp_summary <- summary(open_logit_comp)
@@ -101,10 +138,35 @@ round(agree_logit_comp_summary$coefficients, 3)
 round(neuro_logit_comp_summary$coefficients, 3)
 ```
 
+##### Weighted
+```{r, warning=FALSE, message=FALSE}
+open_logit_comp_weighted <- svyglm(infekt_pos ~ open, design=svydesign(id=~1, weights=~phrf_20_final, data=covid_pers), family=quasibinomial(link='logit'))
+open_logit_comp_weighted_summary <- summary(open_logit_comp_weighted)
+cons_logit_comp_weighted <- svyglm(infekt_pos ~ cons, design=svydesign(id=~1, weights=~phrf_20_final, data=covid_pers), family=quasibinomial(link='logit'))
+cons_logit_comp_weighted_summary <- summary(cons_logit_comp_weighted)
+extra_logit_comp_weighted <- svyglm(infekt_pos ~ extra, design=svydesign(id=~1, weights=~phrf_20_final, data=covid_pers), family=quasibinomial(link='logit'))
+extra_logit_comp_weighted_summary <- summary(extra_logit_comp_weighted)
+agree_logit_comp_weighted <- svyglm(infekt_pos ~ agree, design=svydesign(id=~1, weights=~phrf_20_final, data=covid_pers), family=quasibinomial(link='logit'))
+agree_logit_comp_weighted_summary <- summary(agree_logit_comp_weighted)
+neuro_logit_comp_weighted <- svyglm(infekt_pos ~ neuro, design=svydesign(id=~1, weights=~phrf_20_final, data=covid_pers), family=quasibinomial(link='logit'))
+neuro_logit_comp_weighted_summary <- summary(neuro_logit_comp_weighted)
+
+# Openness to Experience
+round(open_logit_comp_weighted_summary$coefficients, 3)
+# Conscientiousness
+round(cons_logit_comp_weighted_summary$coefficients, 3)
+# Extraversion
+round(extra_logit_comp_weighted_summary$coefficients, 3)
+# Agreeableness
+round(agree_logit_comp_weighted_summary$coefficients, 3)
+# Neuroticism
+round(neuro_logit_comp_weighted_summary$coefficients, 3)
+```
+
 ### Model diagnostics
 
 ```{r, warning=FALSE, message=FALSE}
-DescTools::PseudoR2(m3_logit_comp, which="all")
+DescTools::PseudoR2(m4_logit_comp, which="all")
 ```
 Recommended Pseudo $R^2$ measures: McFadden non-adjusted and adjusted, Tjur's D
 
@@ -113,7 +175,7 @@ To be added: 'LogisticsDx' package not available for this R version. Hosmer-Leme
 Calibration Plot in 'rms' package
 ```{r, warning=FALSE, message=FALSE, fig.height=6, fig.width=6}
 library("rms")
-rms.out=lrm(infekt_pos ~ female + age + hghinc + hhgr + open + cons + extra + agree + neuro, data=covid_pers,x=TRUE,y=TRUE)
+rms.out=lrm(infekt_pos ~ female + age + hhgr + open + cons + extra + agree + neuro, data=covid_pers,x=TRUE,y=TRUE)
 plot(calibrate(rms.out))
 ```
 
@@ -123,27 +185,66 @@ Secondary analyses just with the antibodies measure (*AK_pos*) - not including P
 
 #### Start with age and gender
 
+##### Unweighted
 ```{r, warning=FALSE, message=FALSE}
 m1_logit_anti <- glm(AK_pos ~ female + age, family = binomial(link='logit'), data = covid_pers)
 summary(m1_logit_anti)
 ```
 
+##### Weighted
+```{r, warning=FALSE, message=FALSE}
+# apparently I need a version of the dataset without missings in the weighting variable
+covid_pers_AK_only <- covid_pers %>% filter(!is.na(AK_pos))
+
+m1_logit_anti_weighted <- svyglm(AK_pos ~ female + age, design=svydesign(id=~1, weights=~phrf_20_final_dbs, data=covid_pers_AK_only), family=quasibinomial(link='logit'))
+summary(m1_logit_anti_weighted)
+```
+
 #### Add number of persons in household and household income
 
+##### Unweighted
 ```{r, warning=FALSE, message=FALSE}
 m2_logit_anti <- glm(AK_pos ~ female + age + hghinc + hhgr, family = binomial(link='logit'), data = covid_pers)
 summary(m2_logit_anti)
 ```
 
+##### Weighted
+```{r, warning=FALSE, message=FALSE}
+m2_logit_anti_weighted <- svyglm(AK_pos ~ female + age + hghinc + hhgr, design=svydesign(id=~1, weights=~phrf_20_final_dbs, data=covid_pers_AK_only), family=quasibinomial(link='logit'))
+summary(m2_logit_anti_weighted)  
+```
+
 #### Add Big Five traits
 
+##### Unweighted
 ```{r, warning=FALSE, message=FALSE}
 m3_logit_anti <- glm(AK_pos ~ female + age + hghinc + hhgr + open + cons + extra + agree + neuro, family = binomial(link='logit'), data = covid_pers)
 summary(m3_logit_anti)
 ```
 
+##### Weighted
+```{r, warning=FALSE, message=FALSE}
+m3_logit_anti_weighted <- svyglm(AK_pos ~ female + age + hghinc + hhgr + open + cons + extra + agree + neuro, design=svydesign(id=~1, weights=~phrf_20_final_dbs, data=covid_pers_AK_only), family=quasibinomial(link='logit'))
+summary(m3_logit_anti_weighted)  
+```
+
+#### Without income (too much item nonresponse)
+
+##### Unweighted
+```{r, warning=FALSE, message=FALSE}
+m4_logit_anti <- glm(AK_pos ~ female + age + hhgr + open + cons + extra + agree + neuro, family = binomial(link='logit'), data = covid_pers)
+summary(m4_logit_anti)
+```
+
+##### Weighted
+```{r, warning=FALSE, message=FALSE}
+m4_logit_anti_weighted <- svyglm(AK_pos ~ female + age + hhgr + open + cons + extra + agree + neuro, design=svydesign(id=~1, weights=~phrf_20_final_dbs, data=covid_pers_AK_only), family=quasibinomial(link='logit'))
+summary(m4_logit_anti_weighted)  
+```
+
 #### Zero-order models
 
+##### Unweighted
 ```{r, warning=FALSE, message=FALSE}
 open_logit_anti <- glm(AK_pos ~ open, family = binomial(link='logit'), data = covid_pers)
 open_logit_anti_summary <- summary(open_logit_anti)
@@ -168,10 +269,35 @@ round(agree_logit_anti_summary$coefficients, 3)
 round(neuro_logit_anti_summary$coefficients, 3)
 ```
 
+##### Weighted
+```{r, warning=FALSE, message=FALSE}
+open_logit_anti_weighted <- svyglm(AK_pos ~ open, design=svydesign(id=~1, weights=~phrf_20_final_dbs, data=covid_pers_AK_only), family=quasibinomial(link='logit'))
+open_logit_anti_weighted_summary <- summary(open_logit_anti_weighted)
+cons_logit_anti_weighted <- svyglm(AK_pos ~ cons, design=svydesign(id=~1, weights=~phrf_20_final_dbs, data=covid_pers_AK_only), family=quasibinomial(link='logit'))
+cons_logit_anti_weighted_summary <- summary(cons_logit_anti_weighted)
+extra_logit_anti_weighted <- svyglm(AK_pos ~ extra, design=svydesign(id=~1, weights=~phrf_20_final_dbs, data=covid_pers_AK_only), family=quasibinomial(link='logit'))
+extra_logit_anti_weighted_summary <- summary(extra_logit_anti_weighted)
+agree_logit_anti_weighted <- svyglm(AK_pos ~ agree, design=svydesign(id=~1, weights=~phrf_20_final_dbs, data=covid_pers_AK_only), family=quasibinomial(link='logit'))
+agree_logit_anti_weighted_summary <- summary(agree_logit_anti_weighted)
+neuro_logit_anti_weighted <- svyglm(AK_pos ~ neuro, design=svydesign(id=~1, weights=~phrf_20_final_dbs, data=covid_pers_AK_only), family=quasibinomial(link='logit'))
+neuro_logit_anti_weighted_summary <- summary(neuro_logit_anti_weighted)
+
+# Openness to Experience
+round(open_logit_anti_weighted_summary$coefficients, 3)
+# Conscientiousness
+round(cons_logit_anti_weighted_summary$coefficients, 3)
+# Extraversion
+round(extra_logit_anti_weighted_summary$coefficients, 3)
+# Agreeableness
+round(agree_logit_anti_weighted_summary$coefficients, 3)
+# Neuroticism
+round(neuro_logit_anti_weighted_summary$coefficients, 3)
+```
+
 ### Model diagnostics
 
 ```{r, warning=FALSE, message=FALSE}
-DescTools::PseudoR2(m3_logit_anti, which="all")
+DescTools::PseudoR2(m4_logit_anti, which="all")
 ```
 Recommended Pseudo $R^2$ measures: McFadden non-adjusted and adjusted, Tjur's D
 
@@ -180,7 +306,7 @@ To be added: 'LogisticsDx' package not available for this R version. Hosmer-Leme
 Calibration Plot in 'rms' package
 ```{r, warning=FALSE, message=FALSE, fig.height=6, fig.width=6}
 library("rms")
-rms.out=lrm(AK_pos ~ female + age + hghinc + hhgr + open + cons + extra + agree + neuro, data=covid_pers,x=TRUE,y=TRUE)
+rms.out=lrm(AK_pos ~ female + age + hhgr + open + cons + extra + agree + neuro, data=covid_pers,x=TRUE,y=TRUE)
 plot(calibrate(rms.out))
 ```
 
@@ -188,21 +314,32 @@ plot(calibrate(rms.out))
 
 As preregistered, we exclude participants from three federal states with very low reported coronavirus case numbers: Brandenburg, Sachsen-Anhalt, and Mecklenburg-Vorpommern.
 
-#### Big Five traits
-
+##### Unweighted
 ```{r, warning=FALSE, message=FALSE}
 # exclude via 'bula'
 covid_pers_bula <- covid_pers %>% filter(bula %in% c(1:11,15:16))
 
-m3_logit_comp_bula <- glm(infekt_pos ~ female + age + hghinc + hhgr + open + cons + extra + agree + neuro, family = binomial(link='logit'), data = covid_pers_bula)
-summary(m3_logit_comp_bula)
+m4_logit_comp_bula <- glm(infekt_pos ~ female + age + hhgr + open + cons + extra + agree + neuro, family = binomial(link='logit'), data = covid_pers_bula)
+summary(m4_logit_comp_bula)
 
-m3_logit_anti_bula <- glm(AK_pos ~ female + age + hghinc + hhgr + open + cons + extra + agree + neuro, family = binomial(link='logit'), data = covid_pers_bula)
-summary(m3_logit_anti_bula)
+m4_logit_anti_bula <- glm(AK_pos ~ female + age + hhgr + open + cons + extra + agree + neuro, family = binomial(link='logit'), data = covid_pers_bula)
+summary(m4_logit_anti_bula)
 ```
 
+##### Weighted
+```{r, warning=FALSE, message=FALSE}
+# exclude via 'bula'
+covid_pers_AK_only_bula <- covid_pers_AK_only %>% filter(bula %in% c(1:11,15:16))
+
+m4_logit_comp_bula_weighted <- svyglm(infekt_pos ~ female + age + hhgr + open + cons + extra + agree + neuro, design=svydesign(id=~1, weights=~phrf_20_final, data=covid_pers_bula), family=quasibinomial(link='logit'))
+summary(m4_logit_comp_bula_weighted)
+
+m4_logit_anti_bula_weighted <- svyglm(AK_pos ~ female + age + hhgr + open + cons + extra + agree + neuro, design=svydesign(id=~1, weights=~phrf_20_final_dbs, data=covid_pers_AK_only_bula), family=quasibinomial(link='logit'))
+summary(m4_logit_anti_bula_weighted)  
+```
 
 ### To Be Done (?)
 
+* Imputations?
 * "For the same reason, in another additional analysis, we plan to exclude participants who indicated to have mostly worked from home during the coronavirus crisis."
 * "Lastly, due to the rising incidence rates in Germany during the field phase we will analyze timing of the administration of the antibody tests (measured by postal return date) as a moderator by comparing effects in the first third of all conducted test against effects in the last third of all conducted tests."
