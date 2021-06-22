@@ -1,3 +1,5 @@
+library(haven)
+
 
 # Pfade
 path <- '\\\\hume/rdc-gen/generations/soep-core/Gewichtung/ErsteWelle/SOEP_RKI'
