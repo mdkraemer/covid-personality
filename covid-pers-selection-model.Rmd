@@ -1,0 +1,30 @@
+---
+title: "SOEP-RKI: Big Five Personality Traits and COVID-19 Antibodies - Modeling Selection"
+author: "Michael D. Krämer"
+date: "6/10/2021"
+output: html_document
+---
+
+#### Load packages
+```{r, warning=FALSE, message=FALSE}
+library("tidyverse")
+library("DescTools")
+library("survey")
+```
+
+#### Load individual data sets
+```{r, echo = T, results = 'hide', warning=FALSE, message=FALSE}
+
+```
+
+
+
+#### Inspect data
+This dataset still contains around 3.6% missings for the Big Five. These respondents have never filled out the Big Five (validly). I've now used all available data from 2005-2019 to fill in later missings in the Big Five. The variable *lastwave* shows the most recent wave where a respondent answered the Big Five (at least one item - individual missing Big Five traits are also filled in from earlier waves, though).
+```{r, warning=FALSE, message=FALSE}
+table(covid_pers$core) # 0 = SOEP-IS, 1 = SOEP-Core
+table(covid_pers$core, covid_pers$infekt_pos)
+table(covid_pers$core, covid_pers$AK_pos)
+summary(covid_pers)
+covid_pers %>% group_by(core, lastwave) %>% summarise(obs = n())
+```
