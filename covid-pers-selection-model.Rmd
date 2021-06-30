@@ -10,21 +10,80 @@ output: html_document
 library("tidyverse")
 library("DescTools")
 library("survey")
+library("caret")
 ```
 
-#### Load individual data sets
+#### Load merged data set
 ```{r, echo = T, results = 'hide', warning=FALSE, message=FALSE}
-
+#source("Daten_fuer_mkraemer_MK.R")
+load("data/covmerged.rda")
 ```
-
 
 
 #### Inspect data
-This dataset still contains around 3.6% missings for the Big Five. These respondents have never filled out the Big Five (validly). I've now used all available data from 2005-2019 to fill in later missings in the Big Five. The variable *lastwave* shows the most recent wave where a respondent answered the Big Five (at least one item - individual missing Big Five traits are also filled in from earlier waves, though).
+Merging additional data sets to the original RKI data set introduced missingness for participants who could not be matched with the respective data set. I am not sure why, for example, not all participants could be matched with pgen data. For now, I dealt with this by creating a missingness dummy for each data set that was merged, and recoding NA to 0. 
 ```{r, warning=FALSE, message=FALSE}
-table(covid_pers$core) # 0 = SOEP-IS, 1 = SOEP-Core
-table(covid_pers$core, covid_pers$infekt_pos)
-table(covid_pers$core, covid_pers$AK_pos)
-summary(covid_pers)
-covid_pers %>% group_by(core, lastwave) %>% summarise(obs = n())
+table(covmerged$missing_pl)
+table(covmerged$missing_pgen)
+table(covmerged$missing_hgen)
+table(covmerged$missing_bleib)
+table(covmerged$missing_big5)
+table(covmerged$missing_covid)
+table(covmerged$missing_cluster)
 ```
+
+#### Remove redundant variables
+```{r, warning=FALSE, message=FALSE}
+# first, remove variables with var=0
+covmerged_red <- covmerged[ - as.numeric(which(apply(covmerged, 2, var) == 0))]
+
+# second, remove highly correlated variables (>.95)
+cormat <- cor(covmerged_red)
+cormat[!is.finite(cormat)] <- 0
+to_be_removed = caret::findCorrelation(cormat, cutoff=0.95) 
+to_be_removed = sort(to_be_removed)
+covmerged_red <- covmerged_red[, -c(to_be_removed)]
+
+# add dependent variable back in 
+covmerged <- cbind(covmerged_red, ev_gesamt = covmerged$ev_gesamt)
+```
+
+
+#### Run reduced stepwise model first
+```{r, warning=FALSE, message=FALSE}
+glm_formula_red <- as.formula("ev_gesamt ~ p_health1 + p_health3 + p_health4 + p_health5 + p_politic1 + p_politic2 + p_politic4 + p_healthlow + p_sleeplow + p_helwor1 + p_helwor3 + p_lifelow + p_hipriv + p_partypref + p_familylow + p_future1 + p_future3 + p_future4 + missing_pl")
+# full model
+mod1_participation_red <- glm(formula=glm_formula_red, 
+                              family = binomial(link='logit'), data = covmerged)
+summary(mod1_participation_red)
+# null model
+mod0_participation_red <- glm(ev_gesamt ~ 1, family = binomial(link='logit'), 
+                     data = covmerged)
+summary(mod0_participation_red)
+
+# run stepwise algorithm
+mod_stepwise_red <- step(mod1_participation_red, direction = "both", trace = 1, 
+                     scope = list(upper = mod1_participation_red, 
+                                  lower = mod0_participation_red))
+summary(mod_stepwise_red)
+```
+
+#### Run stepwise model
+Too many variables... Runs forever.
+```{r, warning=FALSE, message=FALSE}
+glm_formula <- as.formula("ev_gesamt ~ . - hid - dbs_gesamt")
+# full model
+mod1_participation <- glm(formula=glm_formula, family = binomial(link='logit'), 
+                     data = covmerged)
+summary(mod1_participation)
+# null model
+mod0_participation <- glm(ev_gesamt ~ 1, family = binomial(link='logit'), 
+                     data = covmerged)
+summary(mod0_participation)
+
+# run stepwise algorithm
+#mod_stepwise <- step(mod1_participation, direction = "both", trace = 1, 
+#                     scope = list(upper = mod1_participation, 
+#                                  lower = mod0_participation))
+```
+

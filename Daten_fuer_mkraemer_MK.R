@@ -241,14 +241,61 @@ get_kkz <- get_kkz %>%
   select(cid, kkz) %>% 
   filter(kkz>0)
 
+# filter out soep-is
+in_soepis <- read_dta("S:/DATA2/SOEP-IS/SOEP-IS 2019 Generierung HiWi/Data/finaldata/DE/p.dta")
+in_soepis <- in_soepis %>% group_by(pid) %>% slice_max(syear) %>% ungroup() %>% 
+  select(pid) %>% mutate(in_is = 1)
+
+einsatz <- left_join(einsatz, in_soepis, by="pid")
+einsatz <- einsatz %>% filter(is.na(in_is)) %>% select(-in_is)
+einsatz <- einsatz %>% select(pid, cid, hid, ev_gesamt, dbs_gesamt, pcr_gesamt)
+
 # merge
 covmerged <- left_join(einsatz, pl, by="pid")
+# 1128 NAs in pl variables
+covmerged <- covmerged %>% mutate(missing_pl = ifelse(is.na(p_lifelow), 1, 0)) %>% 
+  mutate_at(vars(starts_with("p_")), funs(replace_na(., 0)))
+
 covmerged <- left_join(covmerged, pgen, by="pid")
+# 829 NAs in pgen variables
+covmerged <- covmerged %>% mutate(missing_pgen = ifelse(is.na(pg_fam_mar), 1, 0)) %>% 
+  mutate_at(vars(starts_with("pg_")), funs(replace_na(., 0)))
+
 covmerged <- left_join(covmerged, hgen, by="hid")
+# 499 NAs in hgen variables
+covmerged <- covmerged %>% mutate(missing_hgen = ifelse(is.na(hg_gar), 1, 0)) %>% 
+  mutate_at(vars(starts_with("hg_")), funs(replace_na(., 0)))
+
 covmerged <- left_join(covmerged, bleib_last, by="hid")
+# 376 NAs in bleib variables
+covmerged <- covmerged %>% mutate(missing_bleib = ifelse(is.na(single), 1, 0)) %>% 
+  mutate_at(vars(-c(1:80)), funs(replace_na(., 0)))
+
+covmerged <- covmerged %>% select(-c(offen, gewiss, extra, neuro, vertraeg))
+covmerged <- left_join(covmerged, soep_big5, by="pid")
+# 1510-1515 NAs in Big5 variables
+covmerged <- covmerged %>% mutate(missing_big5 = ifelse(is.na(open), 1, 0)) %>% 
+  mutate_at(vars(c(agree, cons, neuro, extra, open)), funs(replace_na(., 0)))
+
 # merge via kkz
-covmerged <- left_join(covmerged, get_kkz, by="cid") # 3298 NAs in kkz
+covmerged <- left_join(covmerged, get_kkz, by="cid")
+# 16 NAs in kkz
 covmerged <- left_join(covmerged, covid, by="kkz") 
+# 1126 NAs in covid variables
+covmerged <- covmerged %>% mutate(missing_covid = ifelse(is.na(Inzidenz), 1, 0)) %>% 
+  mutate_at(vars(c(Infizierte_kumuliert, Inzidenz)), funs(replace_na(., 0)))
+
 covmerged <- left_join(covmerged, cluster, by="kkz")
+# 1126 NAs in cluster variables
+covmerged <- covmerged %>% mutate(missing_cluster = ifelse(is.na(pamWardCluster4), 1, 0)) %>% 
+  mutate_at(vars(pamWardCluster4), funs(replace_na(., 0)))
+
+
+covmerged <- covmerged %>% select(-c(email, sample1, adresse, antwort, stichp, 
+                                     pershv, hstamm),
+                                  -c(MeldeLandkreis, RS, kkz, Datum, X)) # pamWardCluster4 ??
+
+# save for later use
+save(covmerged, file = "data/covmerged.rda")
 
 
