@@ -4,3 +4,4 @@
 .Ruserdata
 # ignore raw data (always)
 /data
+/covid-pers-selection-model_cache

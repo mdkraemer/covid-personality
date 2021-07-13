@@ -47,6 +47,15 @@ if (!!window.navigator.userAgent.match("MSIE 8")) {
 !function(a){"use strict";a.matchMedia=a.matchMedia||function(a){var b,c=a.documentElement,d=c.firstElementChild||c.firstChild,e=a.createElement("body"),f=a.createElement("div");return f.id="mq-test-1",f.style.cssText="position:absolute;top:-100em",e.style.background="none",e.appendChild(f),function(a){return f.innerHTML='&shy;<style media="'+a+'"> #mq-test-1 { width: 42px; }</style>',c.insertBefore(e,d),b=42===f.offsetWidth,c.removeChild(e),{matches:b,media:a}}}(a.document)}(this),function(a){"use strict";function b(){u(!0)}var c={};a.respond=c,c.update=function(){};var d=[],e=function(){var b=!1;try{b=new a.XMLHttpRequest}catch(c){b=new a.ActiveXObject("Microsoft.XMLHTTP")}return function(){return b}}(),f=function(a,b){var c=e();c&&(c.open("GET",a,!0),c.onreadystatechange=function(){4!==c.readyState||200!==c.status&&304!==c.status||b(c.responseText)},4!==c.readyState&&c.send(null))};if(c.ajax=f,c.queue=d,c.regex={media:/@media[^\{]+\{([^\{\}]*\{[^\}\{]*\})+/gi,keyframes:/@(?:\-(?:o|moz|webkit)\-)?keyframes[^\{]+\{(?:[^\{\}]*\{[^\}\{]*\})+[^\}]*\}/gi,urls:/(url\()['"]?([^\/\)'"][^:\)'"]+)['"]?(\))/g,findStyles:/@media *([^\{]+)\{([\S\s]+?)$/,only:/(only\s+)?([a-zA-Z]+)\s?/,minw:/\([\s]*min\-width\s*:[\s]*([\s]*[0-9\.]+)(px|em)[\s]*\)/,maxw:/\([\s]*max\-width\s*:[\s]*([\s]*[0-9\.]+)(px|em)[\s]*\)/},c.mediaQueriesSupported=a.matchMedia&&null!==a.matchMedia("only all")&&a.matchMedia("only all").matches,!c.mediaQueriesSupported){var g,h,i,j=a.document,k=j.documentElement,l=[],m=[],n=[],o={},p=30,q=j.getElementsByTagName("head")[0]||k,r=j.getElementsByTagName("base")[0],s=q.getElementsByTagName("link"),t=function(){var a,b=j.createElement("div"),c=j.body,d=k.style.fontSize,e=c&&c.style.fontSize,f=!1;return b.style.cssText="position:absolute;font-size:1em;width:1em",c||(c=f=j.createElement("body"),c.style.background="none"),k.style.fontSize="100%",c.style.fontSize="100%",c.appendChild(b),f&&k.insertBefore(c,k.firstChild),a=b.offsetWidth,f?k.removeChild(c):c.removeChild(b),k.style.fontSize=d,e&&(c.style.fontSize=e),a=i=parseFloat(a)},u=function(b){var c="clientWidth",d=k[c],e="CSS1Compat"===j.compatMode&&d||j.body[c]||d,f={},o=s[s.length-1],r=(new Date).getTime();if(b&&g&&p>r-g)return a.clearTimeout(h),h=a.setTimeout(u,p),void 0;g=r;for(var v in l)if(l.hasOwnProperty(v)){var w=l[v],x=w.minw,y=w.maxw,z=null===x,A=null===y,B="em";x&&(x=parseFloat(x)*(x.indexOf(B)>-1?i||t():1)),y&&(y=parseFloat(y)*(y.indexOf(B)>-1?i||t():1)),w.hasquery&&(z&&A||!(z||e>=x)||!(A||y>=e))||(f[w.media]||(f[w.media]=[]),f[w.media].push(m[w.rules]))}for(var C in n)n.hasOwnProperty(C)&&n[C]&&n[C].parentNode===q&&q.removeChild(n[C]);n.length=0;for(var D in f)if(f.hasOwnProperty(D)){var E=j.createElement("style"),F=f[D].join("\n");E.type="text/css",E.media=D,q.insertBefore(E,o.nextSibling),E.styleSheet?E.styleSheet.cssText=F:E.appendChild(j.createTextNode(F)),n.push(E)}},v=function(a,b,d){var e=a.replace(c.regex.keyframes,"").match(c.regex.media),f=e&&e.length||0;b=b.substring(0,b.lastIndexOf("/"));var g=function(a){return a.replace(c.regex.urls,"$1"+b+"$2$3")},h=!f&&d;b.length&&(b+="/"),h&&(f=1);for(var i=0;f>i;i++){var j,k,n,o;h?(j=d,m.push(g(a))):(j=e[i].match(c.regex.findStyles)&&RegExp.$1,m.push(RegExp.$2&&g(RegExp.$2))),n=j.split(","),o=n.length;for(var p=0;o>p;p++)k=n[p],l.push({media:k.split("(")[0].match(c.regex.only)&&RegExp.$2||"all",rules:m.length-1,hasquery:k.indexOf("(")>-1,minw:k.match(c.regex.minw)&&parseFloat(RegExp.$1)+(RegExp.$2||""),maxw:k.match(c.regex.maxw)&&parseFloat(RegExp.$1)+(RegExp.$2||"")})}u()},w=function(){if(d.length){var b=d.shift();f(b.href,function(c){v(c,b.href,b.media),o[b.href]=!0,a.setTimeout(function(){w()},0)})}},x=function(){for(var b=0;b<s.length;b++){var c=s[b],e=c.href,f=c.media,g=c.rel&&"stylesheet"===c.rel.toLowerCase();e&&g&&!o[e]&&(c.styleSheet&&c.styleSheet.rawCssText?(v(c.styleSheet.rawCssText,e,f),o[e]=!0):(!/^([a-zA-Z:]*\/\/)/.test(e)&&!r||e.replace(RegExp.$1,"").split("/")[0]===a.location.host)&&("//"===e.substring(0,2)&&(e=a.location.protocol+e),d.push({href:e,media:f})))}w()};x(),c.update=x,c.getEmValue=t,a.addEventListener?a.addEventListener("resize",b,!1):a.attachEvent&&a.attachEvent("onresize",b)}}(this);
 };
 </script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
 <script>
 
 /**
@@ -219,11 +228,6 @@ color: #d14;
     </style>
 
 <style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-  pre:not([class]) {
-    background-color: white;
-  }
-</style>
 <script type="text/javascript">
 if (window.hljs) {
   hljs.configure({languages: []});
@@ -236,32 +240,6 @@ if (window.hljs) {
 
 
 
-<style type="text/css">
-h1 {
-  font-size: 34px;
-}
-h1.title {
-  font-size: 38px;
-}
-h2 {
-  font-size: 30px;
-}
-h3 {
-  font-size: 24px;
-}
-h4 {
-  font-size: 18px;
-}
-h5 {
-  font-size: 16px;
-}
-h6 {
-  font-size: 12px;
-}
-.table th:not([align]) {
-  text-align: left;
-}
-</style>
 
 
 
@@ -272,10 +250,6 @@ h6 {
   max-width: 940px;
   margin-left: auto;
   margin-right: auto;
-}
-code {
-  color: inherit;
-  background-color: rgba(0, 0, 0, 0.04);
 }
 img {
   max-width:100%;
@@ -292,6 +266,9 @@ button.code-folding-btn:focus {
 summary {
   display: list-item;
 }
+pre code {
+  padding: 0;
+}
 </style>
 
 
@@ -304,7 +281,6 @@ summary {
   max-height: 500px;
   min-height: 44px;
   overflow-y: auto;
-  background: white;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
@@ -368,7 +344,7 @@ summary {
 
 
 
-<div class="fluid-row" id="header">
+<div id="header">
 
 
 
@@ -384,7 +360,8 @@ summary {
 <pre class="r"><code>library(&quot;tidyverse&quot;)
 library(&quot;DescTools&quot;)
 library(&quot;survey&quot;)
-library(&quot;caret&quot;)</code></pre>
+library(&quot;caret&quot;)
+library(&quot;randomForest&quot;)</code></pre>
 </div>
 <div id="load-merged-data-set" class="section level4">
 <h4>Load merged data set</h4>
@@ -428,273 +405,16 @@ load(&quot;data/covmerged.rda&quot;)</code></pre>
 <pre class="r"><code># first, remove variables with var=0
 covmerged_red &lt;- covmerged[ - as.numeric(which(apply(covmerged, 2, var) == 0))]
 
-# second, remove highly correlated variables (&gt;.95)
+# second, remove highly correlated variables (&gt;.90)
 cormat &lt;- cor(covmerged_red)
 cormat[!is.finite(cormat)] &lt;- 0
-to_be_removed = caret::findCorrelation(cormat, cutoff=0.95) 
+to_be_removed = caret::findCorrelation(cormat, cutoff=0.90) 
 to_be_removed = sort(to_be_removed)
 covmerged_red &lt;- covmerged_red[, -c(to_be_removed)]
 
 # add dependent variable back in 
-covmerged &lt;- cbind(covmerged_red, ev_gesamt = covmerged$ev_gesamt)</code></pre>
-</div>
-<div id="run-reduced-stepwise-model-first" class="section level4">
-<h4>Run reduced stepwise model first</h4>
-<pre class="r"><code>glm_formula_red &lt;- as.formula(&quot;ev_gesamt ~ p_health1 + p_health3 + p_health4 + p_health5 + p_politic1 + p_politic2 + p_politic4 + p_healthlow + p_sleeplow + p_helwor1 + p_helwor3 + p_lifelow + p_hipriv + p_partypref + p_familylow + p_future1 + p_future3 + p_future4 + missing_pl&quot;)
-# full model
-mod1_participation_red &lt;- glm(formula=glm_formula_red, 
-                              family = binomial(link=&#39;logit&#39;), data = covmerged)
-summary(mod1_participation_red)</code></pre>
-<pre><code>## 
-## Call:
-## glm(formula = glm_formula_red, family = binomial(link = &quot;logit&quot;), 
-##     data = covmerged)
-## 
-## Deviance Residuals: 
-##     Min       1Q   Median       3Q      Max  
-## -1.5661  -1.1110  -0.7662   1.1422   1.9386  
-## 
-## Coefficients:
-##              Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept) -0.158135   0.031725  -4.985 6.21e-07 ***
-## p_health1   -0.062605   0.042979  -1.457 0.145217    
-## p_health3   -0.055981   0.031900  -1.755 0.079274 .  
-## p_health4   -0.114099   0.049590  -2.301 0.021401 *  
-## p_health5   -0.299412   0.097413  -3.074 0.002115 ** 
-## p_politic1   0.142855   0.044503   3.210 0.001327 ** 
-## p_politic2   0.215283   0.030460   7.068 1.57e-12 ***
-## p_politic4  -0.616294   0.041451 -14.868  &lt; 2e-16 ***
-## p_healthlow  0.140669   0.058648   2.399 0.016461 *  
-## p_sleeplow   0.010686   0.047723   0.224 0.822823    
-## p_helwor1   -0.301102   0.040411  -7.451 9.26e-14 ***
-## p_helwor3    0.009312   0.032217   0.289 0.772544    
-## p_lifelow    0.033248   0.082138   0.405 0.685635    
-## p_hipriv     0.351940   0.037401   9.410  &lt; 2e-16 ***
-## p_partypref  0.385312   0.027649  13.936  &lt; 2e-16 ***
-## p_familylow -0.267074   0.076854  -3.475 0.000511 ***
-## p_future1   -0.143688   0.030544  -4.704 2.55e-06 ***
-## p_future3   -0.039322   0.037351  -1.053 0.292439    
-## p_future4   -0.347936   0.087492  -3.977 6.99e-05 ***
-## missing_pl  -0.360263   0.069255  -5.202 1.97e-07 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## (Dispersion parameter for binomial family taken to be 1)
-## 
-##     Null deviance: 37539  on 27119  degrees of freedom
-## Residual deviance: 36118  on 27100  degrees of freedom
-## AIC: 36158
-## 
-## Number of Fisher Scoring iterations: 4</code></pre>
-<pre class="r"><code># null model
-mod0_participation_red &lt;- glm(ev_gesamt ~ 1, family = binomial(link=&#39;logit&#39;), 
-                     data = covmerged)
-summary(mod0_participation_red)</code></pre>
-<pre><code>## 
-## Call:
-## glm(formula = ev_gesamt ~ 1, family = binomial(link = &quot;logit&quot;), 
-##     data = covmerged)
-## 
-## Deviance Residuals: 
-##    Min      1Q  Median      3Q     Max  
-## -1.139  -1.139  -1.139   1.217   1.217  
-## 
-## Coefficients:
-##             Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept) -0.09210    0.01216  -7.576 3.58e-14 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## (Dispersion parameter for binomial family taken to be 1)
-## 
-##     Null deviance: 37539  on 27119  degrees of freedom
-## Residual deviance: 37539  on 27119  degrees of freedom
-## AIC: 37541
-## 
-## Number of Fisher Scoring iterations: 3</code></pre>
-<pre class="r"><code># run stepwise algorithm
-mod_stepwise_red &lt;- step(mod1_participation_red, direction = &quot;both&quot;, trace = 1, 
-                     scope = list(upper = mod1_participation_red, 
-                                  lower = mod0_participation_red))</code></pre>
-<pre><code>## Start:  AIC=36157.63
-## ev_gesamt ~ p_health1 + p_health3 + p_health4 + p_health5 + p_politic1 + 
-##     p_politic2 + p_politic4 + p_healthlow + p_sleeplow + p_helwor1 + 
-##     p_helwor3 + p_lifelow + p_hipriv + p_partypref + p_familylow + 
-##     p_future1 + p_future3 + p_future4 + missing_pl
-## 
-##               Df Deviance   AIC
-## - p_sleeplow   1    36118 36156
-## - p_helwor3    1    36118 36156
-## - p_lifelow    1    36118 36156
-## - p_future3    1    36119 36157
-## &lt;none&gt;              36118 36158
-## - p_health1    1    36120 36158
-## - p_health3    1    36121 36159
-## - p_health4    1    36123 36161
-## - p_healthlow  1    36123 36161
-## - p_health5    1    36127 36165
-## - p_politic1   1    36128 36166
-## - p_familylow  1    36130 36168
-## - p_future4    1    36134 36172
-## - p_future1    1    36140 36178
-## - missing_pl   1    36145 36183
-## - p_politic2   1    36168 36206
-## - p_helwor1    1    36174 36212
-## - p_hipriv     1    36207 36245
-## - p_partypref  1    36312 36350
-## - p_politic4   1    36347 36385
-## 
-## Step:  AIC=36155.68
-## ev_gesamt ~ p_health1 + p_health3 + p_health4 + p_health5 + p_politic1 + 
-##     p_politic2 + p_politic4 + p_healthlow + p_helwor1 + p_helwor3 + 
-##     p_lifelow + p_hipriv + p_partypref + p_familylow + p_future1 + 
-##     p_future3 + p_future4 + missing_pl
-## 
-##               Df Deviance   AIC
-## - p_helwor3    1    36118 36154
-## - p_lifelow    1    36118 36154
-## - p_future3    1    36119 36155
-## &lt;none&gt;              36118 36156
-## - p_health1    1    36120 36156
-## - p_health3    1    36121 36157
-## + p_sleeplow   1    36118 36158
-## - p_health4    1    36123 36159
-## - p_healthlow  1    36124 36160
-## - p_health5    1    36127 36163
-## - p_politic1   1    36128 36164
-## - p_familylow  1    36130 36166
-## - p_future4    1    36134 36170
-## - p_future1    1    36140 36176
-## - missing_pl   1    36145 36181
-## - p_politic2   1    36168 36204
-## - p_helwor1    1    36174 36210
-## - p_hipriv     1    36207 36243
-## - p_partypref  1    36312 36348
-## - p_politic4   1    36347 36383
-## 
-## Step:  AIC=36153.76
-## ev_gesamt ~ p_health1 + p_health3 + p_health4 + p_health5 + p_politic1 + 
-##     p_politic2 + p_politic4 + p_healthlow + p_helwor1 + p_lifelow + 
-##     p_hipriv + p_partypref + p_familylow + p_future1 + p_future3 + 
-##     p_future4 + missing_pl
-## 
-##               Df Deviance   AIC
-## - p_lifelow    1    36118 36152
-## - p_future3    1    36119 36153
-## &lt;none&gt;              36118 36154
-## - p_health1    1    36120 36154
-## - p_health3    1    36121 36155
-## + p_helwor3    1    36118 36156
-## + p_sleeplow   1    36118 36156
-## - p_health4    1    36123 36157
-## - p_healthlow  1    36124 36158
-## - p_health5    1    36127 36161
-## - p_politic1   1    36128 36162
-## - p_familylow  1    36130 36164
-## - p_future4    1    36134 36168
-## - p_future1    1    36140 36174
-## - missing_pl   1    36147 36181
-## - p_politic2   1    36168 36202
-## - p_helwor1    1    36176 36210
-## - p_hipriv     1    36207 36241
-## - p_partypref  1    36312 36346
-## - p_politic4   1    36347 36381
-## 
-## Step:  AIC=36151.94
-## ev_gesamt ~ p_health1 + p_health3 + p_health4 + p_health5 + p_politic1 + 
-##     p_politic2 + p_politic4 + p_healthlow + p_helwor1 + p_hipriv + 
-##     p_partypref + p_familylow + p_future1 + p_future3 + p_future4 + 
-##     missing_pl
-## 
-##               Df Deviance   AIC
-## - p_future3    1    36119 36151
-## &lt;none&gt;              36118 36152
-## - p_health1    1    36120 36152
-## - p_health3    1    36121 36153
-## + p_lifelow    1    36118 36154
-## + p_helwor3    1    36118 36154
-## + p_sleeplow   1    36118 36154
-## - p_health4    1    36124 36156
-## - p_healthlow  1    36125 36157
-## - p_health5    1    36127 36159
-## - p_politic1   1    36128 36160
-## - p_familylow  1    36130 36162
-## - p_future4    1    36134 36166
-## - p_future1    1    36140 36172
-## - missing_pl   1    36147 36179
-## - p_politic2   1    36168 36200
-## - p_helwor1    1    36176 36208
-## - p_hipriv     1    36207 36239
-## - p_partypref  1    36312 36344
-## - p_politic4   1    36347 36379
-## 
-## Step:  AIC=36150.98
-## ev_gesamt ~ p_health1 + p_health3 + p_health4 + p_health5 + p_politic1 + 
-##     p_politic2 + p_politic4 + p_healthlow + p_helwor1 + p_hipriv + 
-##     p_partypref + p_familylow + p_future1 + p_future4 + missing_pl
-## 
-##               Df Deviance   AIC
-## &lt;none&gt;              36119 36151
-## - p_health1    1    36121 36151
-## + p_future3    1    36118 36152
-## - p_health3    1    36123 36153
-## + p_lifelow    1    36119 36153
-## + p_helwor3    1    36119 36153
-## + p_sleeplow   1    36119 36153
-## - p_health4    1    36125 36155
-## - p_healthlow  1    36125 36155
-## - p_health5    1    36129 36159
-## - p_politic1   1    36129 36159
-## - p_familylow  1    36131 36161
-## - p_future4    1    36134 36164
-## - p_future1    1    36140 36170
-## - missing_pl   1    36147 36177
-## - p_politic2   1    36169 36199
-## - p_helwor1    1    36178 36208
-## - p_hipriv     1    36209 36239
-## - p_partypref  1    36314 36344
-## - p_politic4   1    36348 36378</code></pre>
-<pre class="r"><code>summary(mod_stepwise_red)</code></pre>
-<pre><code>## 
-## Call:
-## glm(formula = ev_gesamt ~ p_health1 + p_health3 + p_health4 + 
-##     p_health5 + p_politic1 + p_politic2 + p_politic4 + p_healthlow + 
-##     p_helwor1 + p_hipriv + p_partypref + p_familylow + p_future1 + 
-##     p_future4 + missing_pl, family = binomial(link = &quot;logit&quot;), 
-##     data = covmerged)
-## 
-## Deviance Residuals: 
-##     Min       1Q   Median       3Q      Max  
-## -1.5652  -1.1102  -0.7644   1.1396   1.9486  
-## 
-## Coefficients:
-##             Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept) -0.16019    0.02852  -5.617 1.94e-08 ***
-## p_health1   -0.05959    0.04188  -1.423 0.154716    
-## p_health3   -0.05994    0.03073  -1.950 0.051127 .  
-## p_health4   -0.11904    0.04840  -2.459 0.013919 *  
-## p_health5   -0.29745    0.09542  -3.117 0.001825 ** 
-## p_politic1   0.14055    0.04445   3.162 0.001566 ** 
-## p_politic2   0.21480    0.03045   7.053 1.75e-12 ***
-## p_politic4  -0.61584    0.04142 -14.869  &lt; 2e-16 ***
-## p_healthlow  0.14465    0.05674   2.549 0.010789 *  
-## p_helwor1   -0.30484    0.03975  -7.668 1.75e-14 ***
-## p_hipriv     0.35216    0.03740   9.417  &lt; 2e-16 ***
-## p_partypref  0.38571    0.02764  13.953  &lt; 2e-16 ***
-## p_familylow -0.26279    0.07504  -3.502 0.000462 ***
-## p_future1   -0.13597    0.02960  -4.594 4.36e-06 ***
-## p_future4   -0.33266    0.08634  -3.853 0.000117 ***
-## missing_pl  -0.35821    0.06785  -5.280 1.29e-07 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## (Dispersion parameter for binomial family taken to be 1)
-## 
-##     Null deviance: 37539  on 27119  degrees of freedom
-## Residual deviance: 36119  on 27104  degrees of freedom
-## AIC: 36151
-## 
-## Number of Fisher Scoring iterations: 4</code></pre>
+covmerged &lt;- cbind(covmerged_red, ev_gesamt = covmerged$ev_gesamt)
+covmerged &lt;- covmerged %&gt;% mutate(ev_gesamt_fac = as.factor(ev_gesamt)) # needed for random forest</code></pre>
 </div>
 <div id="run-stepwise-model" class="section level4">
 <h4>Run stepwise model</h4>
@@ -703,457 +423,72 @@ mod_stepwise_red &lt;- step(mod1_participation_red, direction = &quot;both&quot;
 # full model
 mod1_participation &lt;- glm(formula=glm_formula, family = binomial(link=&#39;logit&#39;), 
                      data = covmerged)
-summary(mod1_participation)</code></pre>
-<pre><code>## 
-## Call:
-## glm(formula = glm_formula, family = binomial(link = &quot;logit&quot;), 
-##     data = covmerged)
-## 
-## Deviance Residuals: 
-##     Min       1Q   Median       3Q      Max  
-## -2.3216  -0.9785  -0.3878   0.9781   2.5431  
-## 
-## Coefficients: (4 not defined because of singularities)
-##                          Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept)            -3.608e-01  2.528e-01  -1.427 0.153498    
-## p_health1               3.290e-02  4.841e-02   0.680 0.496717    
-## p_health3              -7.460e-02  3.625e-02  -2.058 0.039591 *  
-## p_health4              -1.135e-01  5.658e-02  -2.007 0.044780 *  
-## p_health5              -2.152e-01  1.099e-01  -1.958 0.050283 .  
-## p_politic1              3.049e-02  5.405e-02   0.564 0.572673    
-## p_politic2              9.133e-02  3.751e-02   2.435 0.014894 *  
-## p_politic4             -1.588e-01  4.727e-02  -3.360 0.000780 ***
-## p_healthlow            -8.315e-03  6.490e-02  -0.128 0.898060    
-## p_sleeplow              1.206e-01  5.291e-02   2.280 0.022635 *  
-## p_helwor1              -2.110e-03  4.590e-02  -0.046 0.963331    
-## p_helwor3              -8.373e-03  3.799e-02  -0.220 0.825555    
-## p_lifelow              -1.856e-02  9.324e-02  -0.199 0.842185    
-## p_hipriv                5.497e-02  6.307e-02   0.872 0.383437    
-## p_partypref             7.993e-02  3.481e-02   2.296 0.021664 *  
-## p_familylow            -6.356e-02  8.694e-02  -0.731 0.464725    
-## p_future1               1.256e-02  3.470e-02   0.362 0.717464    
-## p_future3               3.270e-02  4.297e-02   0.761 0.446733    
-## p_future4              -3.457e-02  9.702e-02  -0.356 0.721603    
-## missing_pl              2.070e-01  2.023e-01   1.023 0.306384    
-## pg_nat_ger              3.046e-01  1.244e+00   0.245 0.806635    
-## pg_nat_other            6.933e-02  1.248e+00   0.056 0.955679    
-## pg_fam_mar              2.628e-02  1.222e-01   0.215 0.829794    
-## pg_fam_sep              4.709e-03  1.553e-01   0.030 0.975803    
-## pg_fam_single          -2.239e-01  1.221e-01  -1.834 0.066696 .  
-## pg_fam_wid              1.367e-01  1.344e-01   1.017 0.308918    
-## pg_empl_full           -6.847e-02  1.241e+00  -0.055 0.955996    
-## pg_empl_part            7.518e-02  1.241e+00   0.061 0.951695    
-## pg_empl_train          -2.193e-01  1.243e+00  -0.176 0.860006    
-## pg_empl_marg            8.621e-02  1.242e+00   0.069 0.944645    
-## pg_empl_unem            1.640e-02  1.240e+00   0.013 0.989450    
-## pg_empl_disab           4.586e-01  1.293e+00   0.355 0.722916    
-## pg_oeffd                9.601e-02  4.997e-02   1.921 0.054678 .  
-## pg_edu_low              4.823e-02  2.233e-01   0.216 0.828991    
-## pg_edu_mid              3.028e-01  2.197e-01   1.378 0.168088    
-## pg_edu_high             3.254e-01  2.187e-01   1.488 0.136735    
-## pg_edu_na              -4.430e-02  1.403e-01  -0.316 0.752250    
-## pg_deg_sec             -3.553e-01  1.896e-01  -1.874 0.060927 .  
-## pg_deg_int             -2.769e-01  1.856e-01  -1.492 0.135615    
-## pg_deg_tech            -1.478e-01  1.884e-01  -0.784 0.432854    
-## pg_deg_abi             -1.790e-01  1.815e-01  -0.986 0.323961    
-## pg_deg_other           -3.259e-01  1.928e-01  -1.690 0.090993 .  
-## pg_deg_no              -3.986e-01  2.328e-01  -1.712 0.086893 .  
-## pg_deg_notyet                  NA         NA      NA       NA    
-## missing_pgen                   NA         NA      NA       NA    
-## hg_air                  3.129e-01  9.932e-02   3.150 0.001632 ** 
-## hg_alm                 -2.502e-02  7.117e-02  -0.352 0.725155    
-## hg_bas                 -3.852e-01  1.440e-01  -2.674 0.007489 ** 
-## hg_fhea                 1.259e-01  4.124e-02   3.052 0.002272 ** 
-## hg_gar                  8.270e-02  1.112e-01   0.743 0.457254    
-## hg_insul               -2.579e-02  3.468e-02  -0.744 0.457122    
-## hg_lif                 -6.434e-02  6.638e-02  -0.969 0.332433    
-## hg_mglass               1.269e-01  7.464e-02   1.701 0.089037 .  
-## hg_nobar               -1.055e-01  4.635e-02  -2.275 0.022891 *  
-## hg_nrj                  6.583e-02  7.355e-02   0.895 0.370733    
-## hg_park                -3.268e-02  1.197e-01  -0.273 0.784876    
-## hg_ter                 -4.721e-03  1.228e-01  -0.038 0.969323    
-## hg_typ1                 5.160e-01  2.525e-01   2.044 0.040969 *  
-## hg_typ2                 8.151e-01  2.541e-01   3.208 0.001336 ** 
-## hg_typ3                 5.258e-01  2.574e-01   2.042 0.041106 *  
-## hg_typ4                 7.044e-01  2.598e-01   2.711 0.006703 ** 
-## hg_typ5                 6.826e-01  2.597e-01   2.629 0.008570 ** 
-## hg_typ6                 7.687e-01  2.642e-01   2.909 0.003621 ** 
-## hg_typ7                 7.570e-01  2.985e-01   2.536 0.011222 *  
-## hg_typ8                 2.466e-01  2.784e-01   0.886 0.375678    
-## missing_hgen                   NA         NA      NA       NA    
-## subsamp1               -5.115e-01  4.588e-01  -1.115 0.264852    
-## subsamp2               -1.963e+00  5.934e-01  -3.308 0.000941 ***
-## subsamp3               -2.785e-01  5.380e-01  -0.518 0.604732    
-## subsamp4               -1.125e+00  6.377e-01  -1.765 0.077573 .  
-## subsamp5               -5.238e-01  5.684e-01  -0.922 0.356759    
-## subsamp6               -2.898e-01  6.656e-01  -0.435 0.663300    
-## subsamp7               -6.407e-01  4.612e-01  -1.389 0.164784    
-## subsamp8               -9.641e-01  5.226e-01  -1.845 0.065062 .  
-## subsamp9               -3.403e-01  5.257e-01  -0.647 0.517475    
-## subsamp10              -1.405e-01  5.932e-01  -0.237 0.812786    
-## subsamp11              -7.646e-01  5.978e-01  -1.279 0.200843    
-## subsamp12              -5.242e-01  4.574e-01  -1.146 0.251787    
-## subsamp13              -1.390e+00  7.685e-01  -1.809 0.070424 .  
-## subsamp14              -5.180e-01  4.629e-01  -1.119 0.263121    
-## subsamp15              -2.654e-01  4.620e-01  -0.574 0.565666    
-## subsamp17              -4.034e-01  4.561e-01  -0.884 0.376500    
-## subsamp18              -4.511e-01  4.571e-01  -0.987 0.323693    
-## subsamp19              -9.257e-01  4.605e-01  -2.010 0.044397 *  
-## subsamp20              -8.180e-01  4.699e-01  -1.741 0.081719 .  
-## subsamp23              -6.209e-03  4.892e-01  -0.013 0.989874    
-## subsamp25               1.068e-01  5.028e-01   0.212 0.831732    
-## subsamp26              -4.613e-01  4.622e-01  -0.998 0.318327    
-## subsamp27              -4.289e-01  4.619e-01  -0.929 0.353071    
-## subsamp28              -5.318e-01  4.626e-01  -1.150 0.250340    
-## subsamp29              -5.143e-01  4.673e-01  -1.101 0.271075    
-## subsamp30              -5.766e-01  4.680e-01  -1.232 0.217992    
-## subsamp31              -6.469e-01  4.686e-01  -1.381 0.167396    
-## subsamp32              -4.827e-01  4.691e-01  -1.029 0.303493    
-## subsamp33              -2.101e-01  6.411e-01  -0.328 0.743146    
-## subsamp34               2.586e-01  6.602e-01   0.392 0.695302    
-## telinfra               -2.755e-02  4.990e-02  -0.552 0.580949    
-## familie                -1.196e-02  5.026e-02  -0.238 0.811903    
-## lag2zuzug              -8.272e-02  1.153e-01  -0.718 0.472972    
-## lagauszug              -6.671e-02  1.762e-01  -0.379 0.704996    
-## lag2paar               -6.844e-02  9.406e-02  -0.728 0.466808    
-## lagtrennung             1.273e-01  1.992e-01   0.639 0.522650    
-## punr                   -2.904e-01  4.379e-02  -6.631 3.33e-11 ***
-## muki                   -2.016e-01  5.317e-02  -3.791 0.000150 ***
-## bio                    -1.849e-01  1.042e-01  -1.774 0.076027 .  
-## dj                     -3.340e-02  1.401e-01  -0.238 0.811555    
-## jufra                  -1.181e-01  1.028e-01  -1.148 0.250801    
-## lat                     1.164e-01  4.603e-02   2.528 0.011458 *  
-## ausland                 9.125e-03  7.783e-02   0.117 0.906666    
-## jobneu                  3.249e-02  4.872e-02   0.667 0.504840    
-## pendeln                 4.658e-02  1.064e-01   0.438 0.661544    
-## montage                -9.155e-02  1.613e-01  -0.568 0.570268    
-## aloshh                  1.196e-01  1.050e-01   1.139 0.254759    
-## heirat                  1.123e-01  8.680e-02   1.294 0.195670    
-## geburt                  9.259e-02  1.118e-01   0.828 0.407388    
-## tod                    -3.835e-02  6.579e-02  -0.583 0.559995    
-## scheid                 -5.457e-02  9.478e-02  -0.576 0.564806    
-## diabetes               -1.095e-02  1.664e-01  -0.066 0.947546    
-## asthma                  1.427e-01  1.388e-01   1.029 0.303702    
-## herz                   -1.708e-01  1.408e-01  -1.213 0.225251    
-## krebs                  -7.726e-02  1.481e-01  -0.522 0.601818    
-## migraene                4.761e-01  1.530e-01   3.112 0.001860 ** 
-## bluthoch               -4.704e-02  9.414e-02  -0.500 0.617329    
-## depri                  -2.750e-02  1.475e-01  -0.186 0.852073    
-## ruecken                -2.651e-01  1.185e-01  -2.237 0.025280 *  
-## burnout                -1.623e-02  1.774e-01  -0.091 0.927122    
-## schlafstoerung          8.431e-02  1.456e-01   0.579 0.562431    
-## schlaganfall            4.103e-01  2.866e-01   1.431 0.152310    
-## demenz                 -1.168e+01  9.785e+01  -0.119 0.905015    
-## gelenk                  1.427e-01  1.083e-01   1.319 0.187305    
-## sonstige_kr             1.380e-02  1.057e-01   0.131 0.896107    
-## gesundheit_einschraenk  8.767e-02  1.022e-01   0.858 0.391040    
-## krankschreibung        -2.959e-02  5.635e-02  -0.525 0.599522    
-## abendarbeit            -2.392e-01  9.000e-02  -2.658 0.007869 ** 
-## nachtarbeit            -1.094e-01  1.462e-01  -0.748 0.454387    
-## mgewerk                -1.651e-01  1.837e-01  -0.899 0.368719    
-## mberufsv               -1.117e-01  8.590e-02  -1.301 0.193385    
-## mbetriebsr              1.600e-01  3.683e-01   0.434 0.664007    
-## rauch                  -2.439e-01  3.781e-02  -6.452 1.11e-10 ***
-## kette                  -1.420e-01  5.576e-02  -2.547 0.010872 *  
-## dick                    8.741e-02  3.474e-02   2.516 0.011872 *  
-## zeitdruck              -2.195e-02  3.546e-02  -0.619 0.535909    
-## beschende              -3.499e-02  4.399e-02  -0.795 0.426388    
-## aendkasse               7.316e-02  6.134e-02   1.193 0.233000    
-## sorgwsit                1.564e-02  4.909e-02   0.319 0.749977    
-## grosse_sorgenwe        -1.695e-01  4.252e-02  -3.986 6.71e-05 ***
-## keine_sorgenwe         -4.070e-02  3.292e-02  -1.236 0.216300    
-## grosse_sorgenalt       -1.369e-01  3.876e-02  -3.532 0.000412 ***
-## keine_sorgenalt        -4.943e-02  3.430e-02  -1.441 0.149548    
-## grosse_sorgenfr         3.053e-02  3.378e-02   0.904 0.366118    
-## keine_sorgenfr         -2.306e-02  4.704e-02  -0.490 0.623928    
-## grosse_sorgenzh         4.847e-02  3.364e-02   1.441 0.149663    
-## keine_sorgenzh          2.678e-02  4.231e-02   0.633 0.526751    
-## grosse_sorgenaf         9.975e-02  3.276e-02   3.044 0.002331 ** 
-## keine_sorgenaf         -4.136e-02  4.163e-02  -0.994 0.320453    
-## grosse_sorgenzw        -1.881e-01  3.848e-02  -4.887 1.02e-06 ***
-## keine_sorgenzw          1.797e-01  3.728e-02   4.821 1.43e-06 ***
-## gesellig1              -1.428e-01  9.466e-02  -1.508 0.131523    
-## gesellig4               1.580e-01  9.438e-02   1.674 0.094039 .  
-## finanzent              -1.279e-01  3.955e-02  -3.235 0.001216 ** 
-## keinbesuch             -3.752e-01  2.297e-01  -1.634 0.102330    
-## uebersetzungshilfen     2.913e-01  1.257e-01   2.318 0.020467 *  
-## einladungbefrag         6.100e-01  2.817e-01   2.166 0.030346 *  
-## zufr_fam               -6.410e-02  3.814e-02  -1.680 0.092876 .  
-## geld1                   1.217e-03  3.687e-02   0.033 0.973678    
-## geld2                  -8.398e-02  3.398e-02  -2.471 0.013462 *  
-## arbeitsstunden_q34     -1.274e-01  3.675e-02  -3.466 0.000529 ***
-## ezigarette              5.929e-02  7.007e-02   0.846 0.397428    
-## fleisch_oft             5.474e-02  3.430e-02   1.596 0.110519    
-## fleisch_nie             9.219e-02  9.262e-02   0.995 0.319563    
-## fisch_oft              -1.319e-01  6.961e-02  -1.895 0.058086 .  
-## fisch_nie               1.084e-01  5.172e-02   2.095 0.036160 *  
-## gefluegel_oft          -6.897e-03  4.547e-02  -0.152 0.879446    
-## gefluegel_nie          -6.620e-02  7.763e-02  -0.853 0.393828    
-## chronisch               1.653e-01  3.466e-02   4.770 1.84e-06 ***
-## igel                    2.154e-01  3.264e-02   6.598 4.16e-11 ***
-## refw_schlecht          -1.321e-01  4.167e-02  -3.170 0.001523 ** 
-## refw_gut               -3.831e-02  4.500e-02  -0.851 0.394550    
-## refl_schlecht          -1.425e-01  4.206e-02  -3.388 0.000705 ***
-## refl_gut                3.733e-03  5.447e-02   0.069 0.945367    
-## ref_risiko             -1.142e-01  4.104e-02  -2.784 0.005371 ** 
-## ref_chance             -4.106e-02  4.460e-02  -0.921 0.357204    
-## spende_flucht           2.114e-02  3.533e-02   0.599 0.549501    
-## zweitstaat              2.677e-02  7.087e-02   0.378 0.705678    
-## ausl_eltern            -1.559e-01  5.286e-02  -2.950 0.003179 ** 
-## gross                   8.463e-03  4.203e-02   0.201 0.840402    
-## westost_lag            -2.385e-01  1.230e-01  -1.938 0.052570 .  
-## region1                -5.192e-02  7.677e-02  -0.676 0.498844    
-## region2                -4.039e-02  6.329e-02  -0.638 0.523310    
-## region4                 1.030e-01  6.450e-02   1.597 0.110260    
-## region5                 4.860e-02  6.869e-02   0.708 0.479241    
-## region6                 9.977e-02  5.669e-02   1.760 0.078397 .  
-## region7                -1.157e-01  5.274e-02  -2.194 0.028204 *  
-## region8                 8.731e-02  1.285e-01   0.679 0.496863    
-## region9                 5.888e-02  1.677e-01   0.351 0.725451    
-## region10                1.925e-01  1.400e-01   1.375 0.169214    
-## region11                4.619e-02  1.499e-01   0.308 0.757937    
-## region12                4.474e-02  1.473e-01   0.304 0.761289    
-## einhaus                -6.775e-03  5.150e-02  -0.132 0.895343    
-## hochhaus                4.650e-03  5.667e-02   0.082 0.934609    
-## saq                     1.863e-01  7.293e-02   2.555 0.010630 *  
-## capi                   -2.824e-01  5.851e-02  -4.826 1.39e-06 ***
-## cawi                    1.702e-01  1.543e-01   1.103 0.270235    
-## cawi1                   1.419e-01  1.397e-01   1.016 0.309697    
-## modechange              3.824e-02  9.382e-02   0.408 0.683565    
-## hmissrate_d            -1.782e-01  4.388e-02  -4.061 4.88e-05 ***
-## hmissrate_finanz_d      1.383e-02  4.426e-02   0.313 0.754636    
-## anstalt                 1.120e-01  2.019e-01   0.555 0.579158    
-## bildungvater           -1.367e-01  1.403e-01  -0.974 0.330042    
-## bildungmutter          -3.082e-01  1.233e-01  -2.500 0.012422 *  
-## sozh                   -1.541e-01  1.806e-01  -0.853 0.393509    
-## wohngeld                1.280e-01  1.109e-01   1.154 0.248385    
-## quartil1                1.132e-01  6.386e-02   1.772 0.076342 .  
-## quartil3                7.717e-02  4.167e-02   1.852 0.064055 .  
-## untmiete                1.391e-01  1.261e-01   1.103 0.270014    
-## eigentum                6.968e-02  4.036e-02   1.726 0.084310 .  
-## pflege                  2.780e-01  1.281e-01   2.170 0.030024 *  
-## pflegebed              -1.747e-01  1.001e-01  -1.746 0.080857 .  
-## vkeine                 -2.267e-01  4.594e-02  -4.933 8.08e-07 ***
-## vviel                   1.607e-01  4.390e-02   3.661 0.000251 ***
-## einsch_wohngroesse     -5.583e-02  4.374e-02  -1.277 0.201747    
-## zustand_wohnhaus       -3.018e-01  1.153e-01  -2.616 0.008886 ** 
-## hhoffline              -5.715e-01  6.567e-02  -8.703  &lt; 2e-16 ***
-## keinfinanz_rueck        2.790e-02  4.762e-02   0.586 0.557952    
-## keinurlaub             -2.151e-01  3.810e-02  -5.647 1.63e-08 ***
-## intkurz                 2.167e-01  3.203e-01   0.677 0.498663    
-## intlang                 6.808e-02  3.521e-01   0.193 0.846685    
-## late                   -1.716e-01  3.193e-02  -5.375 7.66e-08 ***
-## ohnekeller             -3.812e-01  1.436e-01  -2.654 0.007951 ** 
-## ohnegarten              1.176e-01  1.076e-01   1.094 0.274139    
-## solarenergie            8.461e-02  4.931e-02   1.716 0.086144 .  
-## sparen                 -7.389e-02  4.009e-02  -1.843 0.065306 .  
-## laerm                  -4.121e-02  1.110e-01  -0.371 0.710540    
-## luftschmutz            -1.440e-01  1.397e-01  -1.031 0.302728    
-## ohnegruenfl            -4.169e-01  1.870e-01  -2.229 0.025816 *  
-## auslfam                -3.380e-02  1.051e-01  -0.321 0.747859    
-## wohnver2               -8.893e-02  7.279e-02  -1.222 0.221824    
-## wohnver3               -2.270e-02  7.334e-02  -0.309 0.756982    
-## wohnver4                1.264e-01  1.926e-01   0.656 0.511575    
-## kleine_wohnung         -9.948e-03  4.613e-02  -0.216 0.829269    
-## keinbalkon             -6.429e-02  1.195e-01  -0.538 0.590680    
-## keinegarage            -2.061e-02  1.166e-01  -0.177 0.859676    
-## keinauto               -9.069e-02  5.213e-02  -1.740 0.081912 .  
-## alg2heute               8.280e-02  9.282e-02   0.892 0.372372    
-## schuhe                 -2.578e-02  1.379e-01  -0.187 0.851705    
-## lagzuzug               -1.788e-01  1.426e-01  -1.254 0.209943    
-## aktauszug               2.074e-03  3.043e-01   0.007 0.994561    
-## lagpaar                -5.784e-02  1.117e-01  -0.518 0.604760    
-## akttrennung            -1.278e-01  1.804e-01  -0.709 0.478613    
-## incent_1               -5.335e-02  9.202e-02  -0.580 0.562075    
-## incent_0                6.898e-02  1.002e-01   0.689 0.490995    
-## einh                    4.409e-02  4.365e-02   1.010 0.312471    
-## hochh                   2.195e-02  5.525e-02   0.397 0.691161    
-## mic_konsetab            3.025e-01  1.334e-01   2.267 0.023360 *  
-## mic_libintel            3.674e-01  1.371e-01   2.679 0.007373 ** 
-## mic_perform1            1.966e-01  1.356e-01   1.450 0.147010    
-## mic_expedit             2.406e-01  1.333e-01   1.804 0.071167 .  
-## mic_buergerl1           2.454e-01  1.316e-01   1.865 0.062180 .  
-## mic_adaptprag           2.603e-01  1.330e-01   1.957 0.050364 .  
-## mic_sozoeko             2.411e-01  1.366e-01   1.765 0.077601 .  
-## mic_tradition1          1.356e-01  1.311e-01   1.035 0.300876    
-## mic_prekaere            2.031e-01  1.329e-01   1.528 0.126511    
-## mic_hedonist1           1.407e-01  1.305e-01   1.078 0.281072    
-## mic_postmat            -1.122e+01  1.970e+02  -0.057 0.954567    
-## fluktarea               1.632e-02  4.174e-02   0.391 0.695848    
-## internetarea            9.515e-02  4.127e-02   2.305 0.021147 *  
-## auslandteil            -7.534e-02  4.659e-02  -1.617 0.105877    
-## singlearea              8.297e-02  4.498e-02   1.845 0.065110 .  
-## familarea              -4.101e-02  3.774e-02  -1.086 0.277261    
-## statuslow              -1.418e-01  4.160e-02  -3.408 0.000654 ***
-## statushigh             -1.499e-01  4.396e-02  -3.411 0.000648 ***
-## fazarea                -3.790e-02  4.701e-02  -0.806 0.420113    
-## alosarea                9.287e-02  4.592e-02   2.022 0.043146 *  
-## auslmz                 -3.731e-02  5.778e-02  -0.646 0.518494    
-## ostarea                -3.228e-02  4.152e-02  -0.777 0.436869    
-## islamarea               4.700e-02  5.542e-02   0.848 0.396468    
-## kaufklow                1.897e-02  4.454e-02   0.426 0.670217    
-## kaufkhigh               5.476e-02  4.143e-02   1.322 0.186236    
-## respst2                 1.255e-01  5.850e-02   2.145 0.031981 *  
-## respst3                 8.079e-02  1.092e-01   0.740 0.459372    
-## respst4                 5.151e-02  9.405e-02   0.548 0.583903    
-## respst5                 1.379e-01  3.616e-01   0.381 0.702945    
-## intst                  -1.170e-01  5.870e-02  -1.993 0.046209 *  
-## phas2miss_finanz        1.031e-01  6.438e-02   1.602 0.109237    
-## pmissrate_d            -9.332e-02  4.048e-02  -2.305 0.021147 *  
-## pmissrate_finanz_d     -9.398e-02  4.500e-02  -2.089 0.036742 *  
-## pmissrate_vermoegen_d   6.773e-02  8.559e-02   0.791 0.428763    
-## keinfreund             -6.435e-02  6.204e-02  -1.037 0.299614    
-## vielfreund              1.150e-01  5.394e-02   2.132 0.032986 *  
-## besuch_beiausl          5.725e-02  1.096e-01   0.523 0.601281    
-## besuch_vonausl          1.830e-01  1.123e-01   1.629 0.103228    
-## netzwerk               -5.279e-01  5.446e-01  -0.969 0.332393    
-## xnetzwerk              -3.277e-01  3.225e-01  -1.016 0.309490    
-## auslborn               -3.098e-01  7.656e-02  -4.046 5.21e-05 ***
-## status2                 1.241e-01  1.123e-01   1.104 0.269439    
-## status4                 3.529e-02  1.425e-01   0.248 0.804384    
-## status5                 2.810e-01  1.254e-01   2.242 0.024981 *  
-## status6                 1.521e-01  1.415e-01   1.075 0.282555    
-## status7                 1.888e-01  1.218e-01   1.550 0.121105    
-## zukunft_erwerb          1.198e-01  9.378e-02   1.277 0.201447    
-## oeffdienst             -2.988e-02  5.408e-02  -0.552 0.580621    
-## zufr_lebensstrd        -3.281e-02  7.717e-02  -0.425 0.670685    
-## zufr_wohnung           -2.264e-01  6.888e-02  -3.286 0.001015 ** 
-## unbefristet             6.978e-02  6.254e-02   1.116 0.264526    
-## polint                 -4.573e-03  3.638e-02  -0.126 0.899961    
-## partei_id              -2.014e-02  3.447e-02  -0.584 0.559025    
-## wahl1                  -3.897e-02  9.680e-02  -0.403 0.687238    
-## wahl3                  -4.048e-01  5.740e-02  -7.051 1.77e-12 ***
-## rel                     1.325e-01  8.674e-02   1.527 0.126645    
-## kirchgang              -4.679e-02  1.165e-01  -0.402 0.687899    
-## sorge                  -5.543e-02  4.066e-02  -1.363 0.172857    
-## allzuf                  1.625e-01  8.944e-02   1.817 0.069168 .  
-## zukzuf5                -7.572e-03  8.851e-02  -0.086 0.931823    
-## zukzuf1                -7.309e-02  1.161e-01  -0.630 0.529008    
-## sorge_ges               1.387e-02  3.687e-02   0.376 0.706727    
-## zufr_ges               -7.178e-02  4.643e-02  -1.546 0.122112    
-## behind                  5.531e-02  4.935e-02   1.121 0.262319    
-## spittal                -4.522e-02  4.317e-02  -1.048 0.294835    
-## risiko                 -6.533e-02  3.099e-02  -2.108 0.035048 *  
-## glueck                 -1.049e-02  3.407e-02  -0.308 0.758251    
-## aerger                  1.568e-02  3.856e-02   0.407 0.684235    
-## angst                   3.143e-02  6.564e-02   0.479 0.632099    
-## trauer                  1.040e-03  5.625e-02   0.018 0.985245    
-## opti                    9.549e-02  1.133e-01   0.843 0.399297    
-## freizeit               -7.784e-02  3.682e-02  -2.114 0.034484 *  
-## agseitj_q1              1.015e-01  1.538e-01   0.660 0.509066    
-## agseitj_q2              2.043e-01  1.531e-01   1.334 0.182070    
-## agseitj_q3              1.219e-01  1.535e-01   0.794 0.427132    
-## agseitj_q4              7.890e-02  1.570e-01   0.502 0.615384    
-## ausbildung              1.363e-01  8.182e-02   1.666 0.095645 .  
-## abschluss              -1.061e-02  9.853e-02  -0.108 0.914220    
-## ausgeglichen            3.286e-02  3.701e-02   0.888 0.374635    
-## energie                -6.918e-02  3.644e-02  -1.899 0.057598 .  
-## wschaffen               7.819e-02  9.776e-02   0.800 0.423829    
-## wsorgfalt              -4.755e-02  1.143e-01  -0.416 0.677320    
-## verbwohn               -1.459e-01  1.174e-01  -1.243 0.213898    
-## wegzug                  1.580e-01  1.005e-01   1.572 0.116027    
-## umzugbl                 2.816e-01  1.390e-01   2.026 0.042796 *  
-## umzugausl              -1.364e-01  1.085e-01  -1.257 0.208654    
-## kvprivat               -8.503e-02  6.463e-02  -1.316 0.188312    
-## verbheimat             -7.060e-02  7.581e-02  -0.931 0.351729    
-## deutsch                -1.095e-01  8.002e-02  -1.369 0.171107    
-## kultur                 -2.819e-01  1.000e-01  -2.818 0.004835 ** 
-## kino                    2.983e-02  8.793e-02   0.339 0.734454    
-## arbeitszeit            -1.776e-01  3.937e-02  -4.511 6.46e-06 ***
-## spende                  8.631e-03  3.382e-02   0.255 0.798582    
-## zeitarbeit             -6.195e-03  1.502e-01  -0.041 0.967094    
-## treppen1               -1.057e-03  6.976e-02  -0.015 0.987907    
-## treppen3                1.201e-01  4.285e-02   2.802 0.005075 ** 
-## anstrengung1            3.960e-03  6.230e-02   0.064 0.949316    
-## anstrengung3           -8.643e-02  4.230e-02  -2.043 0.041019 *  
-## besuch_heimat           4.934e-02  7.588e-02   0.650 0.515524    
-## persanw1                1.654e-02  3.907e-02   0.423 0.672019    
-## persanw2                1.866e-02  8.316e-02   0.224 0.822469    
-## persanw3               -2.534e-01  1.648e-01  -1.538 0.124059    
-## schwermut2              1.915e-02  3.762e-02   0.509 0.610750    
-## schwermut34             1.153e-01  6.552e-02   1.760 0.078472 .  
-## alosgeld               -4.708e-02  1.578e-01  -0.298 0.765496    
-## lesen_gut              -2.586e-01  1.712e-01  -1.511 0.130874    
-## under12                -1.779e-02  5.913e-02  -0.301 0.763545    
-## equiv_quartil1         -1.615e-01  6.241e-02  -2.589 0.009639 ** 
-## equiv_quartil3         -3.368e-02  4.391e-02  -0.767 0.443049    
-## sexhv                   1.194e-01  3.499e-02   3.413 0.000643 ***
-## althv1                 -7.495e-02  1.219e-01  -0.615 0.538583    
-## althv2                  1.869e-02  6.497e-02   0.288 0.773650    
-## althv4                  1.027e-01  4.902e-02   2.095 0.036150 *  
-## althv5                  2.077e-01  5.940e-02   3.497 0.000470 ***
-## althv6                  3.108e-01  8.183e-02   3.798 0.000146 ***
-## althv7                  6.469e-02  9.872e-02   0.655 0.512292    
-## osm                    -1.444e-02  4.317e-02  -0.334 0.738082    
-## freshmen               -2.098e-01  1.444e-01  -1.453 0.146191    
-## geschied               -2.021e-01  8.801e-02  -2.297 0.021640 *  
-## witwe                  -1.819e-01  1.274e-01  -1.428 0.153381    
-## ledig                   1.369e-01  7.344e-02   1.864 0.062339 .  
-## uni                     9.417e-02  5.084e-02   1.852 0.064014 .  
-## edulow                  5.296e-02  4.860e-02   1.090 0.275868    
-## rentner                 1.947e-01  1.013e-01   1.921 0.054714 .  
-## beruf3                  1.137e-02  1.383e-01   0.082 0.934513    
-## beruf4                 -2.634e-02  1.316e-01  -0.200 0.841420    
-## beruf5                  2.391e-01  1.566e-01   1.526 0.126908    
-## beruf6                 -2.482e-01  1.371e-01  -1.810 0.070352 .  
-## beruf7                  9.567e-02  1.998e-01   0.479 0.632070    
-## schneeball             -4.145e-01  3.094e-01  -1.340 0.180355    
-## wechsel                -1.099e-02  3.569e-02  -0.308 0.758024    
-## neuhh                  -3.341e-01  3.578e-01  -0.934 0.350431    
-## move                   -1.380e-01  1.319e-01  -1.046 0.295379    
-## temp                   -5.079e-02  2.444e-01  -0.208 0.835396    
-## gruenearea             -1.178e+01  1.970e+02  -0.060 0.952325    
-## missing_bleib                  NA         NA      NA       NA    
-## open                    6.680e-03  1.525e-02   0.438 0.661337    
-## cons                    8.250e-03  1.707e-02   0.483 0.628908    
-## extra                  -6.834e-02  1.369e-02  -4.993 5.93e-07 ***
-## agree                   1.682e-03  1.563e-02   0.108 0.914311    
-## neuro                  -2.730e-03  1.287e-02  -0.212 0.832022    
-## missing_big5           -5.416e-01  1.921e-01  -2.819 0.004817 ** 
-## Infizierte_kumuliert    3.028e-05  9.056e-06   3.344 0.000826 ***
-## Inzidenz               -2.165e-04  1.228e-04  -1.764 0.077755 .  
-## pamWardCluster4        -1.533e-04  2.679e-04  -0.572 0.567136    
-## missing_cluster         1.535e-01  1.140e-01   1.346 0.178191    
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## (Dispersion parameter for binomial family taken to be 1)
-## 
-##     Null deviance: 37539  on 27119  degrees of freedom
-## Residual deviance: 31710  on 26725  degrees of freedom
-## AIC: 32500
-## 
-## Number of Fisher Scoring iterations: 10</code></pre>
-<pre class="r"><code># null model
+#summary(mod1_participation)
+# null model
 mod0_participation &lt;- glm(ev_gesamt ~ 1, family = binomial(link=&#39;logit&#39;), 
                      data = covmerged)
-summary(mod0_participation)</code></pre>
-<pre><code>## 
-## Call:
-## glm(formula = ev_gesamt ~ 1, family = binomial(link = &quot;logit&quot;), 
-##     data = covmerged)
-## 
-## Deviance Residuals: 
-##    Min      1Q  Median      3Q     Max  
-## -1.139  -1.139  -1.139   1.217   1.217  
-## 
-## Coefficients:
-##             Estimate Std. Error z value Pr(&gt;|z|)    
-## (Intercept) -0.09210    0.01216  -7.576 3.58e-14 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## (Dispersion parameter for binomial family taken to be 1)
-## 
-##     Null deviance: 37539  on 27119  degrees of freedom
-## Residual deviance: 37539  on 27119  degrees of freedom
-## AIC: 37541
-## 
-## Number of Fisher Scoring iterations: 3</code></pre>
-<pre class="r"><code># run stepwise algorithm
+#summary(mod0_participation)
+
+# run stepwise algorithm
 #mod_stepwise &lt;- step(mod1_participation, direction = &quot;both&quot;, trace = 1, 
 #                     scope = list(upper = mod1_participation, 
 #                                  lower = mod0_participation))</code></pre>
+</div>
+<div id="random-forest---variable-importance" class="section level4">
+<h4>Random forest - variable importance</h4>
+<p>Information on function: <a href="https://www.rdocumentation.org/packages/randomForest/versions/4.6-14/topics/importance" class="uri">https://www.rdocumentation.org/packages/randomForest/versions/4.6-14/topics/importance</a><br />
+Some basic information on method: <a href="https://www.r-bloggers.com/2015/06/variable-importance-plot-and-variable-selection/" class="uri">https://www.r-bloggers.com/2015/06/variable-importance-plot-and-variable-selection/</a><br />
+<a href="https://www.stat.berkeley.edu/~breiman/RandomForests/cc_home.htm#varimp" class="uri">https://www.stat.berkeley.edu/~breiman/RandomForests/cc_home.htm#varimp</a></p>
+<pre class="r"><code>covmerged &lt;- covmerged %&gt;% select(-ev_gesamt)
+cov.rf &lt;- randomForest(ev_gesamt_fac ~ ., data=covmerged, ntree=1000,
+                          keep.forest=FALSE, importance=TRUE)
+#importance(cov.rf)
+
+imp_cov &lt;- as.data.frame(importance(cov.rf))
+# &#39;MeanDecreaseGini&#39; is the relevant measure for variable importance
+imp_cov %&gt;% arrange(desc(MeanDecreaseGini)) %&gt;% slice(1:20)</code></pre>
+<pre><code>##                               0          1 MeanDecreaseAccuracy
+## dbs_gesamt           100.872616 106.077044            104.81025
+## hid                   34.410894  34.632055             39.76434
+## Infizierte_kumuliert  38.423999  35.549958             43.48405
+## Inzidenz              40.556121  35.437499             46.87375
+## open                  11.792333  12.173282             16.73405
+## neuro                  8.348176   8.294196             11.69152
+## extra                  9.368648   8.230862             12.59896
+## agree                  8.520847  10.103827             13.12056
+## cons                  10.412479  14.293908             17.48198
+## keinurlaub            19.996756  22.711322             23.27324
+## pg_deg_abi            17.302510  11.405988             16.49998
+## uni                   21.131722  18.593217             21.05627
+## keinfinanz_rueck      19.296634  16.197298             18.71953
+## sparen                18.850679  15.968931             18.52650
+## rauch                 22.615044  20.351306             23.10602
+## ausland               16.892199  18.657028             18.91207
+## p_partypref           14.855412  10.873826             14.77930
+## wahl3                 20.468389  20.816349             23.15459
+## grosse_sorgenzw       20.260722  22.724119             23.46780
+## pamWardCluster4       25.192442  23.623716             30.68552
+##                      MeanDecreaseGini
+## dbs_gesamt                 6627.61551
+## hid                         219.08873
+## Infizierte_kumuliert        140.38560
+## Inzidenz                    137.75801
+## open                        100.70622
+## neuro                        95.57777
+## extra                        94.09186
+## agree                        86.99558
+## cons                         85.47643
+## keinurlaub                   71.72981
+## pg_deg_abi                   70.23875
+## uni                          68.26565
+## keinfinanz_rueck             63.69118
+## sparen                       57.82240
+## rauch                        56.18875
+## ausland                      55.76909
+## p_partypref                  50.52176
+## wahl3                        50.37324
+## grosse_sorgenzw              49.60297
+## pamWardCluster4              49.51493</code></pre>
 </div>
 
 
@@ -1183,7 +518,7 @@ $(document).ready(function () {
 
 $(document).ready(function () {
   $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
+    $(this).parent().toggleClass('nav-tabs-open');
   });
 });
 </script>

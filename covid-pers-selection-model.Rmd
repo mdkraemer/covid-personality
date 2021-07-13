@@ -11,6 +11,7 @@ library("tidyverse")
 library("DescTools")
 library("survey")
 library("caret")
+library("randomForest")
 ```
 
 #### Load merged data set
@@ -46,28 +47,9 @@ covmerged_red <- covmerged_red[, -c(to_be_removed)]
 
 # add dependent variable back in 
 covmerged <- cbind(covmerged_red, ev_gesamt = covmerged$ev_gesamt)
-covmerged <- covmerged %>% mutate(ev_gesamt_fac = as.factor(ev_gesamt))
+covmerged <- covmerged %>% mutate(ev_gesamt_fac = as.factor(ev_gesamt)) # needed for random forest
 ```
 
-
-#### Run reduced stepwise model first
-```{r, warning=FALSE, message=FALSE}
-glm_formula_red <- as.formula("ev_gesamt ~ p_health1 + p_health3 + p_health4 + p_health5 + p_politic1 + p_politic2 + p_politic4 + p_healthlow + p_sleeplow + p_helwor1 + p_helwor3 + p_lifelow + p_hipriv + p_partypref + p_familylow + p_future1 + p_future3 + p_future4 + missing_pl")
-# full model
-mod1_participation_red <- glm(formula=glm_formula_red, 
-                              family = binomial(link='logit'), data = covmerged)
-summary(mod1_participation_red)
-# null model
-mod0_participation_red <- glm(ev_gesamt ~ 1, family = binomial(link='logit'), 
-                     data = covmerged)
-summary(mod0_participation_red)
-
-# run stepwise algorithm
-mod_stepwise_red <- step(mod1_participation_red, direction = "both", trace = 1, 
-                     scope = list(upper = mod1_participation_red, 
-                                  lower = mod0_participation_red))
-summary(mod_stepwise_red)
-```
 
 #### Run stepwise model
 Too many variables... Runs forever.
@@ -76,15 +58,32 @@ glm_formula <- as.formula("ev_gesamt ~ . - hid - dbs_gesamt")
 # full model
 mod1_participation <- glm(formula=glm_formula, family = binomial(link='logit'), 
                      data = covmerged)
-summary(mod1_participation)
+#summary(mod1_participation)
 # null model
 mod0_participation <- glm(ev_gesamt ~ 1, family = binomial(link='logit'), 
                      data = covmerged)
-summary(mod0_participation)
+#summary(mod0_participation)
 
 # run stepwise algorithm
-mod_stepwise <- step(mod1_participation, direction = "both", trace = 1, 
-                     scope = list(upper = mod1_participation, 
-                                  lower = mod0_participation))
+#mod_stepwise <- step(mod1_participation, direction = "both", trace = 1, 
+#                     scope = list(upper = mod1_participation, 
+#                                  lower = mod0_participation))
 ```
+
+#### Random forest - variable importance
+Information on function: https://www.rdocumentation.org/packages/randomForest/versions/4.6-14/topics/importance  
+Some basic information on method: https://www.r-bloggers.com/2015/06/variable-importance-plot-and-variable-selection/  
+https://www.stat.berkeley.edu/~breiman/RandomForests/cc_home.htm#varimp
+```{r, warning=FALSE, message=FALSE, cache=T}
+covmerged <- covmerged %>% select(-ev_gesamt)
+cov.rf <- randomForest(ev_gesamt_fac ~ ., data=covmerged, ntree=1000,
+                          keep.forest=FALSE, importance=TRUE)
+#importance(cov.rf)
+
+imp_cov <- as.data.frame(importance(cov.rf))
+# 'MeanDecreaseGini' is the relevant measure for variable importance
+imp_cov %>% arrange(desc(MeanDecreaseGini)) %>% slice(1:20)
+```
+
+
 
